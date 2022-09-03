@@ -1,0 +1,7 @@
+.tableContainer {
+  margin: 15px 0;
+}
+.actionGrp {
+  display: flex;
+  flex-direction: row;
+}
