@@ -1,5 +1,4 @@
 import './App.css';
-import 'antd/dist/antd.css';
 import { BrowserRouter } from 'react-router-dom';
 import { RequestContextProvider } from './services/RequestContext';
 import { UserContextProvider } from './services/UserContext';
