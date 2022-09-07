@@ -1,16 +1,28 @@
-import React from 'react';
-import { Button, Table } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Button, Table, Modal } from 'antd';
 import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import MainLayout from '../../components/MainLayout';
 import './Styles.css';
 import useRequest from '../../services/RequestContext';
-import { useState } from 'react';
-import { useEffect } from 'react';
 
 const EventOrder = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
+
+  const [open, setOpen] = useState(false);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -76,9 +88,14 @@ const EventOrder = () => {
     <MainLayout title="Event Order">
       <div>
         <div>
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
             Add Event Order
           </Button>
+          <Modal title="Basic Modal" visible={open} onOk={handleOk} onCancel={handleCancel}>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal>
         </div>
         <div className="tableContainer">
           <Table dataSource={data} columns={columns} loading={loading} />
