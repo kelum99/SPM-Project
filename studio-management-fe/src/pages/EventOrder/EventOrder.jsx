@@ -3,30 +3,39 @@ import { Button, Table } from 'antd';
 import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import MainLayout from '../../components/MainLayout';
 import './Styles.css';
-import { render } from '@testing-library/react';
-const dataSource = [
-  {
-    key: '1',
-    orderId: '001',
-    customer: 'Mike',
-    mobile: '0752289383',
-    eventType: 'Birthday Party'
-  },
-  {
-    key: '2',
-    orderId: '002',
-    customer: 'John',
-    mobile: '0769368953',
-    eventType: 'Birthday Party'
-  }
-];
+import useRequest from '../../services/RequestContext';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const EventOrder = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { request } = useRequest();
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const res = await request.get('eventOrders');
+      if (res.status === 200) {
+        //console.log('data', res.data);
+        setData(res.data);
+      }
+    } catch (e) {
+      console.log('error fetching orders!', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   const columns = [
     {
       title: 'Order Id',
-      dataIndex: 'orderId',
-      key: 'orderId'
+      dataIndex: '_id',
+      key: '_id'
     },
     {
       title: 'Customer',
@@ -42,6 +51,11 @@ const EventOrder = () => {
       title: 'Event Type',
       dataIndex: 'eventType',
       key: 'eventType'
+    },
+    {
+      title: 'Order Status',
+      dataIndex: 'orderStatus',
+      key: 'orderStatus'
     },
     {
       title: 'Action',
@@ -67,7 +81,7 @@ const EventOrder = () => {
           </Button>
         </div>
         <div className="tableContainer">
-          <Table dataSource={dataSource} columns={columns} />
+          <Table dataSource={data} columns={columns} loading={loading} />
         </div>
       </div>
     </MainLayout>
