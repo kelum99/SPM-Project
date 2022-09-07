@@ -1,0 +1,40 @@
+.amateurTableContainer {
+  margin: 15px 0;
+}
+.amateurActionGrp {
+  display: flex;
+  flex-direction: row;
+}
+.actionButton {
+  margin: 2%;
+}
+.amateurSearch {
+  width: 250px;
+  margin: 2%;
+  margin-left: 1168px;
+  margin-right: 20px;
+}
+.fieldset {
+  border: 1px solid black;
+}
+.verticalDivider {
+  background-color: black;
+  height: 400px;
+}
+.photodiv {
+  width: 600px;
+}
+.itemdiv {
+  width: 600px;
+}
+.orderHeader {
+  background-color: #001529;
+  width: 500px;
+  color: #ffff;
+}
+.checkboxes {
+  width: 250px;
+}
+.checkboxes2 {
+  width: 150px;
+}
