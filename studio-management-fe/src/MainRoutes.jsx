@@ -5,6 +5,7 @@ import EventOrder from './pages/EventOrder/EventOrder';
 import ProfessionalOrder from './pages/ProfessionalOrder/ProfessionalOrder';
 import ProfessionalCustomer from './pages/ProfessionalCustomer/ProfessionalCustomer';
 import AmateurOrder from './pages/AmateurOrder/AmateurOrder';
+import AddAmateurOrder from './pages/AmateurOrder/AddAmateurOrder';
 export default function MainRoutes() {
   return (
     <>
@@ -14,6 +15,7 @@ export default function MainRoutes() {
         <Route path="/professionalOrder" element={<ProfessionalOrder />} />
         <Route path="/professionalCustomer" element={<ProfessionalCustomer />} />
         <Route path="/amateurOrder" element={<AmateurOrder />} />
+        <Route path="/addAmateurOrder" element={<AddAmateurOrder />} />
       </Routes>
     </>
   );
