@@ -2,8 +2,8 @@ import {Body, Controller, Get, HttpCode, Param, Post} from '@nestjs/common';
 import { CreateProfessionalOrderDto } from './dto/create.professionalOrder.dto';
 import { ProfessionalOrderService } from './professionalOrder.service';
 
-@Controller('ProfessionalOrder')
-export class ProfessionalOrder {
+@Controller('professionalOrders')
+export class ProfessionalOrderController {
     constructor(private professionalOrderService: ProfessionalOrderService) {}
 
     @Post('/add')

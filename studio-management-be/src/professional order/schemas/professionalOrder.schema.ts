@@ -1,4 +1,4 @@
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type ProfessionalOrderDocument = ProfessionalOrder & Document;
 
@@ -10,7 +10,7 @@ export class ProfessionalOrder {
     @Prop({ required: true})
     contactNumber: string;
 
-    @Prop({ required: true})
+    @Prop()
     notes: string;
 
     @Prop({ required: true})
@@ -20,10 +20,10 @@ export class ProfessionalOrder {
     photoSize: string;
 
     @Prop({ required: true})
-    framePrice: number;
+    printPrice: number;
 
     @Prop({ required: true})
-    laminatePrice: number;
+    framePrice: number;
 
   @Prop({ required: true })
   total: number;
@@ -31,4 +31,4 @@ export class ProfessionalOrder {
     
 }
 
-export const ProfessionalOrder = SchemaFactory.createForClass(ProfessionalOrder);
+export const ProfessionalOrderSchema = SchemaFactory.createForClass(ProfessionalOrder);
