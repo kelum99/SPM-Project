@@ -3,10 +3,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventOrderModule } from './event order/eventOrder.module';
+import { AmateurOrderModule } from './amateur order/amaterOrder.module';
 
 const DB_URL = `mongodb+srv://Kelum:SPM1234@spm.tnya5xw.mongodb.net/?retryWrites=true&w=majority`;
 @Module({
-  imports: [MongooseModule.forRoot(DB_URL), EventOrderModule],
+  imports: [
+    MongooseModule.forRoot(DB_URL),
+    EventOrderModule,
+    AmateurOrderModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
