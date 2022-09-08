@@ -1,6 +1,10 @@
 import React from 'react';
 import MainLayout from '../../components/MainLayout';
-import { Button, Form, Input, Divider, Select, Radio, Checkbox, InputNumber } from 'antd';
+import { Button, Form, Input, Divider, Select, Radio, Checkbox, InputNumber, message } from 'antd';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import useRequest from '../../services/RequestContext';
+import { useNavigate } from 'react-router-dom';
 
 const layout = {
   labelCol: {
@@ -12,6 +16,26 @@ const layout = {
 };
 
 const AddAmateurOrder = () => {
+  const { Option } = Select;
+  const [form] = Form.useForm();
+  const { request } = useRequest();
+  const [photo, setPhoto] = useState({});
+  const [item, setItem] = useState({});
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('photooo', photo);
+    console.log('itemmm', item);
+  }, [photo, item]);
+
+  // const calculateTotal = (e) => {
+  //   const total =
+  //     copies * printPrice +
+  //     parseFloat(amount * (parseFloat(itemPrintPrice) + parseFloat(itemPrice)));
+  //   console.log(total);
+  //   setTotal(total);
+  // };
+
   const validateMessages = {
     required: '${label} is required!',
     types: {
@@ -23,12 +47,26 @@ const AddAmateurOrder = () => {
     }
   };
 
-  const { Option } = Select;
-
-  const [form] = Form.useForm();
-
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinish = async (values) => {
+    const orderStatus = 'None';
+    const paymentStatus = 'None';
+    try {
+      const amateurOrderObj = {
+        ...values.user,
+        orderStatus: orderStatus,
+        paymentStatus: paymentStatus,
+        photos: photo,
+        items: item
+      };
+      const result = await request.post('amateurOrders/add', amateurOrderObj);
+      if (result) {
+        message.success('Amateur Order Added Successfully !');
+        form.resetFields();
+        navigate(`/amateurOrder`);
+      }
+    } catch (e) {
+      console.log('Error in post request of Amateur Order', e);
+    }
   };
 
   const onReset = () => {
@@ -48,7 +86,7 @@ const AddAmateurOrder = () => {
             <br />
             <br />
             <Form.Item
-              name={['user', 'name']}
+              name={['user', 'customer']}
               label="Name"
               rules={[
                 {
@@ -99,7 +137,10 @@ const AddAmateurOrder = () => {
                             required: true
                           }
                         ]}>
-                        <Radio.Group>
+                        <Radio.Group
+                          onChange={(value) =>
+                            setPhoto({ ...photo, orderType: value.target.value })
+                          }>
                           <Radio.Button value="Copy Out">Copy Out</Radio.Button>
                           <Radio.Button value="Media">Media</Radio.Button>
                           <Radio.Button value="Expert">Expert</Radio.Button>
@@ -116,18 +157,44 @@ const AddAmateurOrder = () => {
                           }
                         ]}>
                         <Select
+                          onChange={(value) => setPhoto({ ...photo, photoSize: value })}
                           className="dropdown"
                           placeholder="2*2 inches (51*51 mm)"
-                          //   defaultValue="Photo Size"
                           style={{
                             width: 230
                           }}
                           allowClear>
                           <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
-                          <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
-                          <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
-                          <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
+                          <Option value="3,5*5 inches (89*127 mm)">3,5*5 inches (89*127 mm)</Option>
+                          <Option value="4*6 inches (102*152 mm)">4*6 inches (102*152 mm)</Option>
+                          <Option value="5*7 inches (127*178 mm)">5*7 inches (127*178 mm)</Option>
+                          <Option value="6*8,5 inches (152*216 mm)">
+                            6*8,5 inches (152*216 mm)
+                          </Option>
+                          <Option value="7*9,5 inches (180*240 mm)">
+                            7*9,5 inches (180*240 mm)
+                          </Option>
+                          <Option value="7,8*9,8 inches (200*250 mm)">
+                            7,8*9,8 inches (200*250 mm)
+                          </Option>
                         </Select>
+                      </Form.Item>
+                      <Form.Item
+                        labelCol={{ ...layout.labelCol, span: 8 }}
+                        name={['user', 'copies']}
+                        label="Copies"
+                        rules={[
+                          {
+                            required: true
+                          }
+                        ]}>
+                        <InputNumber
+                          onChange={(value) => setPhoto({ ...photo, copies: value })}
+                          placeholder="0"
+                          style={{
+                            width: 230
+                          }}
+                        />
                       </Form.Item>
                       <Form.Item
                         labelCol={{ ...layout.labelCol, span: 8 }}
@@ -139,6 +206,9 @@ const AddAmateurOrder = () => {
                           }
                         ]}>
                         <Input
+                          onChange={(value) =>
+                            setPhoto({ ...photo, printPrice: value.target.value })
+                          }
                           placeholder="Rs 0.00"
                           style={{
                             width: 230
@@ -150,18 +220,26 @@ const AddAmateurOrder = () => {
                         <tr>
                           <td className="checkboxes">
                             <Form.Item valuePropName="checked" name={['user', 'frame']}>
-                              <Checkbox>Add Frame</Checkbox>
+                              <Checkbox
+                                onChange={(value) =>
+                                  setPhoto({ ...photo, frame: value.target.checked })
+                                }>
+                                Add Frame
+                              </Checkbox>
                             </Form.Item>
                           </td>
                           <td className="checkboxes2">
                             <Form.Item valuePropName="checked" name={['user', 'laminate']}>
-                              <Checkbox>Laminate</Checkbox>
+                              <Checkbox
+                                onChange={(value) =>
+                                  setPhoto({ ...photo, laminate: value.target.checked })
+                                }>
+                                Laminate
+                              </Checkbox>
                             </Form.Item>
                           </td>
                         </tr>
                       </table>
-                      <br />
-                      <br />
                       <br />
                     </div>
                   </center>
@@ -180,20 +258,20 @@ const AddAmateurOrder = () => {
                           }
                         ]}>
                         <Select
+                          onChange={(value) => setItem({ ...item, item: value })}
                           className="dropdown"
                           placeholder="3D Collage"
-                          //   defaultValue="Select Item"
                           style={{
                             width: 230
                           }}
                           allowClear>
-                          <Option value="2*2 inches (51*51 mm)">3D Collage</Option>
-                          <Option value="2*2 inches (51*51 mm)">Clock Print</Option>
-                          <Option value="2*2 inches (51*51 mm)">Crystal Print</Option>
-                          <Option value="2*2 inches (51*51 mm)">Printed Mug</Option>
-                          <Option value="2*2 inches (51*51 mm)">Rock Printing</Option>
-                          <Option value="2*2 inches (51*51 mm)">Key-tag Prints</Option>
-                          <Option value="2*2 inches (51*51 mm)">Printed Calenders</Option>
+                          <Option value="3D Collage">3D Collage</Option>
+                          <Option value="Clock Print">Clock Print</Option>
+                          <Option value="Crystal Print">Crystal Print</Option>
+                          <Option value="Printed Mug">Printed Mug</Option>
+                          <Option value="Rock Printing">Rock Printing</Option>
+                          <Option value="Key-tag Prints">Key-tag Prints</Option>
+                          <Option value="Printed Calenders">Printed Calenders</Option>
                         </Select>
                       </Form.Item>
                       <Form.Item
@@ -208,6 +286,7 @@ const AddAmateurOrder = () => {
                           }
                         ]}>
                         <InputNumber
+                          onChange={(value) => setItem({ ...item, amount: value })}
                           placeholder="0"
                           style={{
                             width: 230
@@ -223,6 +302,7 @@ const AddAmateurOrder = () => {
                           }
                         ]}>
                         <Input
+                          onChange={(value) => setItem({ ...item, itemPrice: value.target.value })}
                           placeholder="Rs 0.00"
                           style={{
                             width: 230
@@ -238,6 +318,9 @@ const AddAmateurOrder = () => {
                           }
                         ]}>
                         <Input
+                          onChange={(value) =>
+                            setItem({ ...item, itemPrintPrice: value.target.value })
+                          }
                           placeholder="Rs 0.00"
                           style={{
                             width: 230
@@ -258,7 +341,7 @@ const AddAmateurOrder = () => {
           <Form.Item
             labelCol={{ ...layout.labelCol, span: 10 }}
             wrapperCol={{ ...layout.wrapperCol, span: 4 }}
-            name={['user', 'totalPrice']}
+            name={['user', 'total']}
             label="Total Price"
             rules={[
               {
