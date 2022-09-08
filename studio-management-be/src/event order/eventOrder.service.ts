@@ -25,7 +25,7 @@ export class EventOrderService {
 
   async getAll(): Promise<EventOrder[]> {
     try {
-      return this.eventOrderModel.find().exec();
+      return await this.eventOrderModel.find().exec();
     } catch {
       throw new HttpException(
         'Error Getting Event Orders',
