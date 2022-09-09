@@ -2,7 +2,7 @@ export interface AmateurItems {
   item: string;
   amount: number;
   itemPrice: number;
-  printPrice: number;
+  itemPrintPrice: number;
 }
 export interface AmateurPhotos {
   orderType: string;

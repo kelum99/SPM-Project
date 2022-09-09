@@ -35,7 +35,6 @@ const AmateurOrder = () => {
     try {
       const res = await request.get('amateurOrders');
       if (res.status === 200) {
-        //console.log('data', res.data);
         setData(res.data);
       }
     } catch (e) {
@@ -91,7 +90,18 @@ const AmateurOrder = () => {
     }
   ];
 
-  const onSearch = (value) => console.log(value);
+  const onSearch = (value) => {
+    let result = [];
+    result = data.filter((res) => {
+      if (value == '') {
+        window.location.reload(true);
+        return res;
+      } else {
+        return res.customer.toLowerCase().search(value) != -1;
+      }
+    });
+    setData(result);
+  };
 
   return (
     <center>
