@@ -10,7 +10,15 @@
     width: 600px;
   }
   .porderHeader {
-    margin-left: 40px;
+    margin-left: -40px;
+    margin-right: 680px;
   }
-
+  .professionalSearch {
+    width: 250px;
+    height: 100px;
+    margin: 2%;
+    margin-left: -100px;
+    margin-right: 20px;
+    margin-top: 60px;
+  }
   

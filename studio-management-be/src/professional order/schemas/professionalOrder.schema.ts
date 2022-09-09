@@ -25,6 +25,9 @@ export class ProfessionalOrder {
     @Prop({ required: true})
     framePrice: number;
 
+    @Prop({ required: true})
+    paymentStatus:string;
+
   @Prop({ required: true })
   total: number;
 

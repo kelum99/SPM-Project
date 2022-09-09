@@ -1,10 +1,28 @@
-import { Button, Table, Modal, Form, Input, Select } from 'antd';
+import {
+  Button,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Select,
+  message,
+  Space,
+  Typography,
+  InputNumber
+} from 'antd';
 import React, { useState, useEffect } from 'react';
-import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  EditOutlined,
+  EyeOutlined,
+  DeleteOutlined,
+  SearchOutlined
+} from '@ant-design/icons';
 import MainLayout from '../../components/MainLayout';
 import { render } from '@testing-library/react';
 import useRequest from '../../services/RequestContext';
 import './ProfessionalOrderStyles.css';
+//import Search from 'antd/lib/transfer/search';
 
 const layout = {
   labelCol: {
@@ -16,59 +34,130 @@ const layout = {
 };
 
 const ProfessionalOrder = () => {
-  const validateMessages = {
-    required: '${label} is required!',
-    types: {
-      email: '${label} is not a valid email!',
-      number: '${label} is not a valid number!'
-    },
-    number: {
-      range: '${label} must be between ${min} and ${max}'
-    }
-  };
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
-
   const [open, setOpen] = useState(false);
+  const { Search } = Input;
+  const [total, setTotal] = useState();
+  const [printPrice, setPrintPrice] = useState(0);
+  const [framePrice, setFramePrice] = useState(0);
+
+  // const validateMessages = {
+  //   required: '${label} is required!',
+  //   types: {
+  //     email: '${label} is not a valid email!',
+  //     number: '${label} is not a valid number!'
+  //   },
+  //   number: {
+  //     range: '${label} must be between ${min} and ${max}'
+  //   }
+  // };
+
+  useEffect(() => {
+    let temp = 0;
+    temp = printPrice + framePrice;
+    setTotal(temp);
+  }, [framePrice, printPrice]);
 
   const showModal = () => {
     setOpen(true);
   };
 
-  const handleOk = () => {
-    setOpen(false);
-  };
+  // const handleOk = () => {
+  //   setOpen(false);
+  // };
 
   const handleCancel = () => {
     setOpen(false);
+    form.resetFields();
   };
 
-  // useEffect(() => {
-  //   fetchOrders();
-  // }, []);
+  const prefix = (
+    <SearchOutlined
+      style={{
+        fontSize: 14,
+        color: '#1890ff'
+      }}
+    />
+  );
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const res = await request.get('professionalOrders');
+      if (res.status === 200) {
+        setData(res.data);
+      }
+    } catch (e) {
+      console.log('error fetching orders!', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const onFinish = async (values) => {
+    try {
+      const res = await request.post('professionalOrders/add', {
+        ...values,
+        paymentStatus: 'None',
+        total: total
+      });
+      if (res.status === 201) {
+        message.success('Successfully Added!');
+        handleCancel();
+        fetchOrders();
+      } else {
+        message.error('Failed Try Again!');
+        handleCancel();
+      }
+    } catch (e) {
+      console.log('error!', e);
+    }
+  };
+
+  const onSearch = (value) => {
+    let result = [];
+    result = data.filter((res) => {
+      if (value == '') {
+        window.location.reload(true);
+        return res;
+      } else {
+        return res.customer.toLowerCase().search(value) != -1;
+      }
+    });
+    setData(result);
+  };
 
   const columns = [
     {
       title: 'Order Id',
-      dataIndex: 'orderId',
-      key: 'orderId'
+      dataIndex: '_id',
+      key: '_id'
     },
     {
       title: 'Customer Name',
-      dataIndex: 'customerName',
-      key: 'customerName'
+      dataIndex: 'customer',
+      key: 'customer'
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date'
+      title: 'Order Type',
+      dataIndex: 'orderType',
+      key: 'orderType'
     },
     {
       title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone'
+      dataIndex: 'contactNumber',
+      key: 'contactNumber'
+    },
+    {
+      title: 'Payment Status',
+      dataIndex: 'paymentStatus',
+      key: 'paymentStatus'
     },
     {
       title: 'Action',
@@ -90,10 +179,6 @@ const ProfessionalOrder = () => {
 
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log(values);
-  };
-
   const onReset = () => {
     form.resetFields();
   };
@@ -105,19 +190,25 @@ const ProfessionalOrder = () => {
           <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
             Add Professional Order
           </Button>
+          <Space direction="vertical" className="professionalSearch">
+            <Search
+              prefix={prefix}
+              allowClear
+              enterButton="Search"
+              size="middle"
+              onSearch={onSearch}
+              className="professionalSearch"
+            />
+          </Space>
           <Modal
             title="Add Professional Order"
             width={1200}
             visible={open}
-            onOk={handleOk}
+            setOpen={false}
+            footer={null}
+            maskClosable={false}
             onCancel={handleCancel}>
-            <Form
-              {...layout}
-              form={form}
-              name="nest-messages"
-              onFinish={onFinish}
-              // validateMessages={validateMessages}
-            >
+            <Form {...layout} form={form} name="nest-messages" onFinish={onFinish}>
               <fieldset className="fieldset">
                 <br />
                 <br />
@@ -125,7 +216,7 @@ const ProfessionalOrder = () => {
                   <h2 className="CustomerHeader">Customer Details</h2>
                 </div>
                 <Form.Item
-                  name={['user', 'name']}
+                  name={['customer']}
                   style={{
                     width: 600,
                     marginLeft: 10
@@ -134,14 +225,15 @@ const ProfessionalOrder = () => {
                   label="Customer Name"
                   rules={[
                     {
-                      required: true
+                      required: true,
+                      message: 'Customer name is required'
                     }
                   ]}>
                   <Input placeholder="John Smith" />
                 </Form.Item>
 
                 <Form.Item
-                  name={['user', 'mobile']}
+                  name={['contactNumber']}
                   style={{
                     width: 600,
                     marginLeft: 10
@@ -150,14 +242,15 @@ const ProfessionalOrder = () => {
                   label="Contact Number"
                   rules={[
                     {
-                      required: true
+                      required: true,
+                      message: 'Contact number is required'
                     }
                   ]}>
                   <Input placeholder="0767896523" />
                 </Form.Item>
                 <br />
                 <Form.Item
-                  name={['user', 'notes']}
+                  name={['notes']}
                   style={{
                     width: 900,
                     marginLeft: 300,
@@ -176,19 +269,19 @@ const ProfessionalOrder = () => {
                   <tr>
                     <td>
                       <center>
-                        {/* <div className="photodiv"> */}
                         <h2 className="porderHeader">Order Details</h2>
 
                         <Form.Item
                           labelCol={{ ...layout.labelCol, span: 10 }}
-                          name={['user', 'orderType']}
+                          name={['orderType']}
                           style={{
                             marginLeft: -300
                           }}
                           label="Order Type"
                           rules={[
                             {
-                              required: true
+                              required: true,
+                              message: 'Print price is required'
                             }
                           ]}>
                           <Select
@@ -200,23 +293,24 @@ const ProfessionalOrder = () => {
                               marginLeft: -250
                             }}
                             allowClear>
-                            <Option value="2*2 inches (51*51 mm)">Sport Meet MCG</Option>
-                            <Option value="2*2 inches (51*51 mm)">SLIIT Graduation</Option>
-                            <Option value="2*2 inches (51*51 mm)">SLIIT New Year Day</Option>
-                            <Option value="2*2 inches (51*51 mm)">Swimming Meet</Option>
+                            <Option value="Sport Meet MCG">Sport Meet MCG</Option>
+                            <Option value="SLIIT Graduation">SLIIT Graduation</Option>
+                            <Option value="SLIIT New Year Day">SLIIT New Year Day</Option>
+                            <Option value="Swimming Meet">Swimming Meet</Option>
                           </Select>
                         </Form.Item>
 
                         <Form.Item
                           labelCol={{ ...layout.labelCol, span: 10 }}
-                          name={['user', 'photoSize']}
+                          name={['photoSize']}
                           style={{
                             marginLeft: -300
                           }}
                           label="Photo Size"
                           rules={[
                             {
-                              required: true
+                              required: true,
+                              message: 'Photo size is required'
                             }
                           ]}>
                           <Select
@@ -236,7 +330,7 @@ const ProfessionalOrder = () => {
                         </Form.Item>
                         <Form.Item
                           labelCol={{ ...layout.labelCol, span: 10 }}
-                          name={['user', 'printPrice']}
+                          name={['printPrice']}
                           style={{
                             marginLeft: 600,
                             marginTop: -110
@@ -244,11 +338,16 @@ const ProfessionalOrder = () => {
                           label="Print Price"
                           rules={[
                             {
-                              required: true
+                              required: true,
+                              message: 'Print price is required'
                             }
                           ]}>
-                          <Input
-                            placeholder="Rs 0.00"
+                          <InputNumber
+                            onChange={(value) => setPrintPrice(value)}
+                            placeholder=" 0.00"
+                            controls={false}
+                            defaultValue={0}
+                            addonBefore={<Typography.Text>LKR</Typography.Text>}
                             style={{
                               width: 230
                             }}
@@ -257,18 +356,23 @@ const ProfessionalOrder = () => {
 
                         <Form.Item
                           labelCol={{ ...layout.labelCol, span: 10 }}
-                          name={['user', 'framePrice']}
+                          name={['framePrice']}
                           style={{
                             marginLeft: 600
                           }}
                           label="Frame Price"
                           rules={[
                             {
-                              required: true
+                              required: true,
+                              message: 'Frame price is required'
                             }
                           ]}>
-                          <Input
-                            placeholder="Rs 0.00"
+                          <InputNumber
+                            onChange={(value) => setFramePrice(value)}
+                            placeholder=" 0.00"
+                            defaultValue={0}
+                            controls={false}
+                            addonBefore={<Typography.Text>LKR</Typography.Text>}
                             style={{
                               width: 230
                             }}
@@ -288,20 +392,12 @@ const ProfessionalOrder = () => {
               <Form.Item
                 labelCol={{ ...layout.labelCol, span: 10 }}
                 wrapperCol={{ ...layout.wrapperCol, span: 4 }}
-                name={['user', 'totalPrice']}
-                label="Total Price"
-                rules={[
-                  {
-                    required: true
-                  }
-                ]}>
-                <Input
-                  placeholder="Rs 0.00"
-                  style={{
-                    width: 230
-                  }}
-                />
+                label="Total Price">
+                <Typography.Text strong>LKR {total}</Typography.Text>
               </Form.Item>
+              {/* <Typography.Text style={{ float: 'left' }} strong key="total">
+                Total : {total} LKR
+              </Typography.Text> */}
               <br />
 
               <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
