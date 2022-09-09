@@ -1,41 +1,58 @@
 import React from 'react';
 import MainLayout from '../../components/MainLayout';
-import { Button, Table } from 'antd';
-import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Table, Input } from 'antd';
+import {
+  PlusOutlined,
+  EditOutlined,
+  EyeOutlined,
+  DeleteOutlined,
+  SearchOutlined
+} from '@ant-design/icons';
 
 import useRequest from '../../services/RequestContext';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const ProfessionalCustomer = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
+  const { Search } = Input;
 
-  const fetchOrders = async () => {
+  const prefix = (
+    <SearchOutlined
+      style={{
+        fontSize: 16,
+        color: '#1890ff'
+      }}
+    />
+  );
+
+  const fetchProfessionalCustomer = async () => {
     setLoading(true);
     try {
-      const res = await request.get('eventOrders');
+      const res = await request.get('professionalCustomer');
       if (res.status === 200) {
         //console.log('data', res.data);
         setData(res.data);
       }
     } catch (e) {
-      console.log('error fetching orders!', e);
+      console.log('error fetching ProfessionalCustomer!', e);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchProfessionalCustomer();
   }, []);
 
   const columns = [
     {
-      title: 'Customer Name',
-      dataIndex: 'customerName',
-      key: 'customerName'
+      title: 'Studio Name',
+      dataIndex: 'studioName',
+      key: 'studioName'
     },
     {
       title: 'Owner Name',
@@ -78,13 +95,36 @@ const ProfessionalCustomer = () => {
     }
   ];
 
+  const onSearch = (value) => {
+    let result = [];
+    result = data.filter((res) => {
+      if (value == '') {
+        window.location.reload(true);
+        return res;
+      } else {
+        return res.ownerName.toLowerCase().search(value) != -1;
+      }
+    });
+    setData(result);
+  };
+
   return (
     <MainLayout title="Professional Customer">
       <div>
+        <Search
+          prefix={prefix}
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={onSearch}
+          className="amateurSearch"
+        />
         <div>
-          <Button type="primary" icon={<PlusOutlined />}>
-            Add Professional Customer
-          </Button>
+          <Link to={'/addCustomer'}>
+            <Button type="primary" icon={<PlusOutlined />}>
+              Add Professional Customer
+            </Button>
+          </Link>
         </div>
         <div className="tableContainer">
           <Table dataSource={data} columns={columns} loading={loading} />
