@@ -22,19 +22,22 @@ const AddAmateurOrder = () => {
   const [photo, setPhoto] = useState({});
   const [item, setItem] = useState({});
   let navigate = useNavigate();
+  const [total, setTotal] = useState();
 
   useEffect(() => {
-    console.log('photooo', photo);
-    console.log('itemmm', item);
-  }, [photo, item]);
+    var tot = 0;
 
-  // const calculateTotal = (e) => {
-  //   const total =
-  //     copies * printPrice +
-  //     parseFloat(amount * (parseFloat(itemPrintPrice) + parseFloat(itemPrice)));
-  //   console.log(total);
-  //   setTotal(total);
-  // };
+    if (item.amount && item.itemPrice && item.itemPrintPrice && photo.copies && photo.printPrice) {
+      tot =
+        photo.copies * photo.printPrice +
+        parseFloat(item.amount * (parseFloat(item.itemPrintPrice) + parseFloat(item.itemPrice)));
+    } else {
+      tot = 0;
+    }
+    console.log(tot);
+    setTotal(tot);
+    document.getElementById('total').value = total;
+  }, [photo, item, total]);
 
   const validateMessages = {
     required: '${label} is required!',
@@ -56,7 +59,8 @@ const AddAmateurOrder = () => {
         orderStatus: orderStatus,
         paymentStatus: paymentStatus,
         photos: photo,
-        items: item
+        items: item,
+        total: total
       };
       const result = await request.post('amateurOrders/add', amateurOrderObj);
       if (result) {
@@ -342,13 +346,10 @@ const AddAmateurOrder = () => {
             labelCol={{ ...layout.labelCol, span: 10 }}
             wrapperCol={{ ...layout.wrapperCol, span: 4 }}
             name={['user', 'total']}
-            label="Total Price"
-            rules={[
-              {
-                required: true
-              }
-            ]}>
+            label="Total Price">
             <Input
+              id="total"
+              disabled
               placeholder="Rs 0.00"
               style={{
                 width: 230

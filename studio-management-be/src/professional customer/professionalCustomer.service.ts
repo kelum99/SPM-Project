@@ -24,4 +24,27 @@ export class CustomerService {
       throw new HttpException('BAD_REQUEST', HttpStatus.BAD_REQUEST);
     }
   }
+
+  async getAll(): Promise<ProfessionalCustomer[]> {
+    try {
+      return await this.serviceModel.find().exec();
+    } catch {
+      throw new HttpException(
+        'Error Getting Event Orders',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async getProfessionalCustomer(id: string): Promise<ProfessionalCustomer> {
+    try {
+      const customer = await this.serviceModel.findById(id);
+      return customer;
+    } catch {
+      throw new HttpException(
+        'Error Getting Event Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }
