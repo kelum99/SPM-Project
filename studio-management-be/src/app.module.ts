@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventOrderModule } from './event order/eventOrder.module';
 import { ProfessionalOrderModule } from './professional order/professionalOrder.module';
 import { AmateurOrderModule } from './amateur order/amaterOrder.module';
+import { CustomerModule } from './professional customer/professionalCustomer.module';
 
 const DB_URL = `mongodb+srv://Kelum:SPM1234@spm.tnya5xw.mongodb.net/?retryWrites=true&w=majority`;
 @Module({
@@ -12,7 +13,12 @@ const DB_URL = `mongodb+srv://Kelum:SPM1234@spm.tnya5xw.mongodb.net/?retryWrites
     MongooseModule.forRoot(DB_URL),
     EventOrderModule,
     AmateurOrderModule,
+<<<<<<< HEAD
     ProfessionalOrderModule
+=======
+    ProfessionalOrderModule,
+    CustomerModule,
+>>>>>>> cf117086d08088b96f88da191d331a34697e910f
   ],
   controllers: [AppController],
   providers: [AppService],
