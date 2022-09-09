@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   Table,
@@ -18,6 +18,7 @@ import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-de
 import MainLayout from '../../components/MainLayout';
 import './Styles.css';
 import useRequest from '../../services/RequestContext';
+
 const EventOrder = () => {
   const [data, setData] = useState([]);
   const [items, setItems] = useState([]);
@@ -89,17 +90,20 @@ const EventOrder = () => {
     }
   };
 
-  const onSearch = (value) => {
-    let temp = [];
-    if (data.length > 0 && data !== undefined) {
-      if (value === '') {
-        fetchOrders();
-      } else {
-        temp = data.filter((val) => val.customer.toLowerCase().search(value) != -1);
+  const onSearch = useCallback(
+    (value) => {
+      let temp = [];
+      if (data.length > 0 && data !== undefined) {
+        if (value === '' || value === undefined) {
+          fetchOrders();
+        } else {
+          temp = data.filter((val) => val.customer.toLowerCase().search(value.toLowerCase()) != -1);
+          setData(temp);
+        }
       }
-    }
-    setData(temp);
-  };
+    },
+    [data]
+  );
 
   useEffect(() => {
     fetchOrders();
@@ -169,6 +173,7 @@ const EventOrder = () => {
             width={1080}
             title="Add Event Order"
             visible={open}
+            onOk={() => form.submit()}
             onCancel={handleCancel}
             footer={[
               <Typography.Text style={{ float: 'left' }} strong key="total">
@@ -184,17 +189,30 @@ const EventOrder = () => {
             <Form layout="vertical" form={form} onFinish={onFinish}>
               <Row gutter={[24, 24]}>
                 <Col span={12}>
-                  <Form.Item label="Customer Name" name="customer" required>
+                  <Form.Item
+                    label="Customer Name"
+                    name="customer"
+                    rules={[{ required: true, message: 'Customer Name is required' }]}>
                     <Input placeholder="Enter Customer Name" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Contact Number" name="mobile" required>
-                    <Input placeholder="Enter Contact Number" />
+                  <Form.Item
+                    label="Contact Number"
+                    name="mobile"
+                    rules={[{ required: true, message: 'Contact Number is required' }]}>
+                    <InputNumber
+                      style={{ width: '60%' }}
+                      controls={false}
+                      placeholder="Enter Contact Number"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Address" name="address" required>
+                  <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[{ required: true, message: 'Address is required' }]}>
                     <Input placeholder="Enter Customer Address" />
                   </Form.Item>
                 </Col>
@@ -207,7 +225,10 @@ const EventOrder = () => {
               <Divider />
               <Row gutter={[24, 24]}>
                 <Col span={8}>
-                  <Form.Item label="Event Type" name="eventType" required>
+                  <Form.Item
+                    label="Event Type"
+                    name="eventType"
+                    rules={[{ required: true, message: 'Event Type is required' }]}>
                     <Select placeholder="Select Event">
                       <Option value="Birthday party">Birthday party</Option>
                       <Option value="Wedding">Wedding</Option>
@@ -216,7 +237,10 @@ const EventOrder = () => {
                       <Option value="Special Function">Special Function</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Event Date" name="eventDate" required>
+                  <Form.Item
+                    label="Event Date"
+                    name="eventDate"
+                    rules={[{ required: true, message: 'Event Date is required' }]}>
                     <DatePicker placeholder="Select Date" />
                   </Form.Item>
                 </Col>
@@ -224,11 +248,7 @@ const EventOrder = () => {
                   <div style={{ border: '1px solid #c6c6c6', padding: 10 }}>
                     <Form.Item label="Items" name="items">
                       <Input.Group compact>
-                        <Form.Item
-                          style={{ width: '35%' }}
-                          name={['items', 'item']}
-                          //rules={[{ required: true, message: 'Item is required' }]}
-                        >
+                        <Form.Item style={{ width: '35%' }} name={['items', 'item']}>
                           <Select
                             placeholder="Select Item"
                             onChange={() => {
