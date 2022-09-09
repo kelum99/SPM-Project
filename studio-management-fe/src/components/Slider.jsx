@@ -14,7 +14,7 @@ export default function Slider() {
     <div>
       <Sider
         style={{
-          minHeight: '1080px',
+          minHeight: '90vh',
           background: '#001529'
         }}
         width={220}
