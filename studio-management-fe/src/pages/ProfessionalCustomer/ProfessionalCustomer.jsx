@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 
 const ProfessionalCustomer = () => {
-
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
@@ -32,7 +31,6 @@ const ProfessionalCustomer = () => {
     fetchOrders();
   }, []);
 
-  
   const columns = [
     {
       title: 'Customer Name',
@@ -80,10 +78,9 @@ const ProfessionalCustomer = () => {
     }
   ];
 
-
   return (
     <MainLayout title="Professional Customer">
-       <div>
+      <div>
         <div>
           <Button type="primary" icon={<PlusOutlined />}>
             Add Professional Customer
