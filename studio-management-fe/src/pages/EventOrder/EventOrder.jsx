@@ -18,8 +18,6 @@ import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-de
 import MainLayout from '../../components/MainLayout';
 import './Styles.css';
 import useRequest from '../../services/RequestContext';
-import { useCallback } from 'react';
-
 const EventOrder = () => {
   const [data, setData] = useState([]);
   const [items, setItems] = useState([]);
@@ -91,6 +89,18 @@ const EventOrder = () => {
     }
   };
 
+  const onSearch = (value) => {
+    let temp = [];
+    if (data.length > 0 && data !== undefined) {
+      if (value === '') {
+        fetchOrders();
+      } else {
+        temp = data.filter((val) => val.customer.toLowerCase().search(value) != -1);
+      }
+    }
+    setData(temp);
+  };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -151,7 +161,7 @@ const EventOrder = () => {
               style={{
                 width: 250
               }}
-              //onSearch={onSearch}
+              onSearch={onSearch}
             />
           </div>
           <Modal
