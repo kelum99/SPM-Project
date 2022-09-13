@@ -323,9 +323,9 @@ const ProfessionalOrder = () => {
                             }}
                             allowClear>
                             <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
-                            <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
-                            <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
-                            <Option value="2*2 inches (51*51 mm)">2*2 inches (51*51 mm)</Option>
+                            <Option value="2*3 inches (51*51 mm)">2*3inches (51*51 mm)</Option>
+                            <Option value="2*4 inches (51*51 mm)">2*4 inches (51*51 mm)</Option>
+                            <Option value="3*5 inches (51*51 mm)">2*5 inches (51*51 mm)</Option>
                           </Select>
                         </Form.Item>
                         <Form.Item
