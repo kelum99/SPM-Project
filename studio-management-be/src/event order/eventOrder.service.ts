@@ -45,4 +45,20 @@ export class EventOrderService {
       );
     }
   }
+
+  async removeEventOrder(id: string) {
+    try {
+      const result = await this.eventOrderModel.deleteOne({ _id: id });
+      if (result && result.deletedCount === 1) {
+        return { message: 'Order deleted!' };
+      }
+      return { message: 'No Order found!' };
+    } catch (e) {
+      console.log('delete prof order error ', e);
+      throw new HttpException(
+        'Error deleting professional order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }
