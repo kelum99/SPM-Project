@@ -6,6 +6,9 @@ import { ProfessionalOrder, ProfessionalOrderDocument } from "./schemas/professi
 
 @Injectable()
 export class ProfessionalOrderService {
+  deleteProfessionalOrder(id: string) {
+    throw new Error('Method not implemented.');
+  }
     constructor(
         @InjectModel(ProfessionalOrder.name)
         private readonly professionalOrderModel: Model<ProfessionalOrderDocument>,

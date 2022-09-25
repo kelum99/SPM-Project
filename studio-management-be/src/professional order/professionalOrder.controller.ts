@@ -1,4 +1,12 @@
-import {Body, Controller, Get, HttpCode, Param, Post} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateProfessionalOrderDto } from './dto/create.professionalOrder.dto';
 import { ProfessionalOrderService } from './professionalOrder.service';
 
@@ -21,4 +29,9 @@ export class ProfessionalOrderController {
   async getProfessionalOrder(@Param('id') id: string) {
     return this.professionalOrderService.getProfessionalOrder(id);
   }
+
+  // @Delete('/:id')
+  // async deleteProfessionalOrder(@Param('id') id: string) {
+  //   return this.professionalOrderService.deleteProfessionalOrder(id);
+  // }
 }

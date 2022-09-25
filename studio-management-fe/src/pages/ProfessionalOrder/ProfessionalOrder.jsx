@@ -8,7 +8,9 @@ import {
   message,
   Space,
   Typography,
-  InputNumber
+  InputNumber,
+  Popover,
+  Popconfirm
 } from 'antd';
 import React, { useState, useEffect } from 'react';
 import {
@@ -32,6 +34,14 @@ const layout = {
     span: 10
   }
 };
+
+const content = (
+  <div>
+    <p>Delete ?</p>
+    <Button>YES</Button>
+    <Button>NO</Button>
+  </div>
+);
 
 const ProfessionalOrder = () => {
   const [data, setData] = useState([]);
@@ -133,6 +143,20 @@ const ProfessionalOrder = () => {
     setData(result);
   };
 
+  // const handleDelete = async id => {
+  //   try {
+  //     const res = await request.delete(`professionalOrders/${id}`);
+  //     if (res.status === 200) {
+  //       message.success('Successfully Removed!');
+  //       fetchOrders();
+  //     } else {
+  //       message.error('Failed!');
+  //     }
+  //   } catch (e) {
+  //     console.log('err', e);
+  //   }
+  // };
+
   const columns = [
     {
       title: 'Order Id',
@@ -167,8 +191,20 @@ const ProfessionalOrder = () => {
         <>
           <div className="actionGrop">
             <Button icon={<EditOutlined />} />
-            <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} />
-            <Button danger icon={<DeleteOutlined />} />
+
+            <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} onClick={showModal} />
+            <Modal title="payment">
+              <p>Hello</p>
+            </Modal>
+            <Popconfirm
+              content={content}
+              title="Are you sure to delete this recod!"
+              okText="Yes"
+              cancelText="No"
+              // onConfirm={() => handleDelete(record._id)}
+            >
+              <Button danger icon={<DeleteOutlined />} />
+            </Popconfirm>
           </div>
         </>
       )
