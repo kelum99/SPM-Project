@@ -12,12 +12,20 @@ import {
   Col,
   Typography,
   InputNumber,
-  message
+  message,
+  Popconfirm
 } from 'antd';
-import { PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  EditOutlined,
+  EyeOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined
+} from '@ant-design/icons';
 import MainLayout from '../../components/MainLayout';
 import './Styles.css';
 import useRequest from '../../services/RequestContext';
+import PaymentHandler from './PaymentHandler';
 
 const EventOrder = () => {
   const [data, setData] = useState([]);
@@ -27,6 +35,7 @@ const EventOrder = () => {
   const [loading, setLoading] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState();
 
   const { request } = useRequest();
   const { Option } = Select;
@@ -63,6 +72,17 @@ const EventOrder = () => {
     }
   };
 
+  const deleteOrder = async (id) => {
+    try {
+      const res = await request.delete(`eventOrders/${id}`);
+      if (res.status === 200) {
+        fetchOrders();
+        message.success('Order Successfully Deleted!');
+      }
+    } catch (e) {
+      console.log('error deleting data', e);
+    }
+  };
   const calculateTotal = () => {
     let temp = 0;
     if (items.length > 0 && items !== undefined) {
@@ -88,6 +108,11 @@ const EventOrder = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const onClosePaymentModel = async (val) => {
+    await fetchOrders();
+    setSelectedOrder(undefined);
   };
 
   const onSearch = useCallback(
@@ -139,12 +164,28 @@ const EventOrder = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <>
           <div className="actionGrp">
             <Button icon={<EditOutlined />} />
-            <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} />
-            <Button danger icon={<DeleteOutlined />} />
+            <Button
+              style={{ margin: '0px 10px' }}
+              icon={<EyeOutlined />}
+              onClick={() => setSelectedOrder(record)}
+            />
+            <Popconfirm
+              icon={
+                <QuestionCircleOutlined
+                  style={{
+                    color: 'red'
+                  }}
+                />
+              }
+              title="Are you sure to delete this order?"
+              okText="Delete"
+              onConfirm={() => deleteOrder(record._id)}>
+              <Button danger icon={<DeleteOutlined />} />
+            </Popconfirm>
           </div>
         </>
       )
@@ -321,6 +362,7 @@ const EventOrder = () => {
         <div className="tableContainer">
           <Table dataSource={data} columns={columns} loading={loading} />
         </div>
+        <PaymentHandler visible={selectedOrder !== undefined} onCancel={onClosePaymentModel} />
       </div>
     </MainLayout>
   );

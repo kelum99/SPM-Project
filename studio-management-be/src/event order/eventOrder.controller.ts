@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateEventOrderDto } from './dto/create.eventOrder.dto';
 import { EventOrderService } from './eventOrder.service';
 
@@ -20,5 +28,10 @@ export class EventOrderController {
   @Get('/:id')
   async getEventOrder(@Param('id') id: string) {
     return this.eventOrderService.getEventOrder(id);
+  }
+
+  @Delete('/:id')
+  async removeEventOrder(@Param('id') id: string) {
+    return this.eventOrderService.removeEventOrder(id);
   }
 }
