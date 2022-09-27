@@ -36,7 +36,7 @@ const AddAmateurOrder = () => {
     }
     console.log(tot);
     setTotal(tot);
-    document.getElementById('total').value = total;
+    document.getElementById('total').value = 'Rs ' + total;
   }, [photo, item, total]);
 
   const validateMessages = {
