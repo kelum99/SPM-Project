@@ -5,3 +5,31 @@
   display: flex;
   flex-direction: row;
 }
+
+.detailText {
+  display: flex;
+  flex-direction: row;
+}
+.paymentHistory {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+.detailKey {
+  color: grey;
+}
+.detailValue {
+  margin-left: 3px;
+  color: black;
+}
+.receipt {
+  width: 32%;
+  padding: 0 10px;
+  border-left: 1px solid #d9d9d9;
+}
+.receiptDetails {
+  margin-left: 10px;
+  padding: 5px 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+}
