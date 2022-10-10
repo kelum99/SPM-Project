@@ -30,6 +30,7 @@ import PaymentHandler from './PaymentHandler';
 const EventOrder = () => {
   const [data, setData] = useState([]);
   const [items, setItems] = useState([]);
+  const [payment, setPayment] = useState();
   const [total, setTotal] = useState(0);
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
@@ -60,7 +61,8 @@ const EventOrder = () => {
         items: items,
         orderStatus: 'None',
         paymentStatus: 'None',
-        total: total
+        total: total,
+        payment: [{ amount: payment, date: Date.now() }]
       });
       if (res.status === 201) {
         message.success('Event Order Added Successfully!');
@@ -284,6 +286,16 @@ const EventOrder = () => {
                     rules={[{ required: true, message: 'Event Date is required' }]}>
                     <DatePicker placeholder="Select Date" />
                   </Form.Item>
+                  <Form.Item label="Payment" required>
+                    <InputNumber
+                      min={0}
+                      controls={false}
+                      style={{ width: '70%' }}
+                      placeholder="Enter Payment"
+                      addonAfter={<Typography.Text>LKR</Typography.Text>}
+                      onChange={(value) => setPayment(value)}
+                    />
+                  </Form.Item>
                 </Col>
                 <Col span={16}>
                   <div style={{ border: '1px solid #c6c6c6', padding: 10 }}>
@@ -308,7 +320,7 @@ const EventOrder = () => {
                             controls={false}
                             style={{ width: '80%' }}
                             placeholder="Enter Price"
-                            addonBefore={<Typography.Text>LKR</Typography.Text>}
+                            addonAfter={<Typography.Text>LKR</Typography.Text>}
                             onChange={() => setError(undefined)}
                           />
                         </Form.Item>
@@ -360,9 +372,18 @@ const EventOrder = () => {
           </Modal>
         </div>
         <div className="tableContainer">
-          <Table dataSource={data} columns={columns} loading={loading} />
+          <Table
+            rowKey={(record) => record._id}
+            dataSource={data}
+            columns={columns}
+            loading={loading}
+          />
         </div>
-        <PaymentHandler visible={selectedOrder !== undefined} onCancel={onClosePaymentModel} />
+        <PaymentHandler
+          visible={selectedOrder !== undefined}
+          onCancel={onClosePaymentModel}
+          record={selectedOrder}
+        />
       </div>
     </MainLayout>
   );
