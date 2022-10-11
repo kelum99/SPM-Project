@@ -10,7 +10,8 @@ import {
   Typography,
   InputNumber,
   Popover,
-  Popconfirm
+  Popconfirm,
+  DatePicker
 } from 'antd';
 import React, { useState, useEffect } from 'react';
 import {
@@ -24,6 +25,7 @@ import MainLayout from '../../components/MainLayout';
 import { render } from '@testing-library/react';
 import useRequest from '../../services/RequestContext';
 import './ProfessionalOrderStyles.css';
+import PaymentHandler from './PaymentHandler';
 //import Search from 'antd/lib/transfer/search';
 
 const layout = {
@@ -52,6 +54,7 @@ const ProfessionalOrder = () => {
   const [total, setTotal] = useState();
   const [printPrice, setPrintPrice] = useState(0);
   const [framePrice, setFramePrice] = useState(0);
+  const [selectedOrder, setSelectedOrder] = useState();
 
   // const validateMessages = {
   //   required: '${label} is required!',
@@ -106,6 +109,11 @@ const ProfessionalOrder = () => {
     }
   };
 
+  const onClosePaymentModel = async (val) => {
+    await fetchOrders();
+    setSelectedOrder(undefined);
+  };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -143,19 +151,17 @@ const ProfessionalOrder = () => {
     setData(result);
   };
 
-  // const handleDelete = async id => {
-  //   try {
-  //     const res = await request.delete(`professionalOrders/${id}`);
-  //     if (res.status === 200) {
-  //       message.success('Successfully Removed!');
-  //       fetchOrders();
-  //     } else {
-  //       message.error('Failed!');
-  //     }
-  //   } catch (e) {
-  //     console.log('err', e);
-  //   }
-  // };
+  const deleteOrder = async (id) => {
+    try {
+      const res = await request.delete(`professionalOrders/${id}`);
+      if (res.status === 200) {
+        fetchOrders();
+        message.success('Successfully Removed!');
+      }
+    } catch (e) {
+      console.log('err', e);
+    }
+  };
 
   const columns = [
     {
@@ -187,22 +193,25 @@ const ProfessionalOrder = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <>
           <div className="actionGrop">
             <Button icon={<EditOutlined />} />
 
-            <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} onClick={showModal} />
+            <Button
+              style={{ margin: '0px 10px' }}
+              icon={<EyeOutlined />}
+              onClick={() => setSelectedOrder(record)}
+            />
             <Modal title="payment">
               <p>Hello</p>
             </Modal>
             <Popconfirm
               content={content}
-              title="Are you sure to delete this recod!"
+              title="Are you sure to delete this order?"
               okText="Yes"
               cancelText="No"
-              // onConfirm={() => handleDelete(record._id)}
-            >
+              onConfirm={() => deleteOrder(record._id)}>
               <Button danger icon={<DeleteOutlined />} />
             </Popconfirm>
           </div>
@@ -295,6 +304,16 @@ const ProfessionalOrder = () => {
                   labelCol={{ ...layout.labelCol, span: 12 }}
                   label="Notes">
                   <Input.TextArea placeholder="Any Notes !" />
+                  <Form.Item
+                    name="orderDate"
+                    style={{
+                      marginTop: 30,
+                      marginLeft: -95
+                    }}
+                    label="Order Date"
+                    rules={[{ required: true, message: 'Enter order date!' }]}>
+                    <DatePicker placeholder="Enter Date" style={{ width: '50%' }} />
+                  </Form.Item>
                 </Form.Item>
               </fieldset>
               <br />
@@ -451,6 +470,7 @@ const ProfessionalOrder = () => {
         <div className="tableContainer">
           <Table dataSource={data} columns={columns} loading={loading} />
         </div>
+        <PaymentHandler visible={selectedOrder !== undefined} onCancel={onClosePaymentModel} />
       </div>
     </MainLayout>
   );

@@ -7,6 +7,7 @@ export class CreateProfessionalOrderDto {
   readonly photoSize: string;
   readonly printPrice: number;
   readonly framePrice: number;
+  readonly orderDate: Date;
   readonly total: number;
   _id?: string;
 }

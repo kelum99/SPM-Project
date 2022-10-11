@@ -30,8 +30,8 @@ export class ProfessionalOrderController {
     return this.professionalOrderService.getProfessionalOrder(id);
   }
 
-  // @Delete('/:id')
-  // async deleteProfessionalOrder(@Param('id') id: string) {
-  //   return this.professionalOrderService.deleteProfessionalOrder(id);
-  // }
+   @Delete('/:id')
+  async removeProfessionalOrder(@Param('id') id: string) {
+    return this.professionalOrderService.removeProfessionalOrder(id);
+ }
 }
