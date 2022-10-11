@@ -3,6 +3,7 @@ import {
   AmateurPhotos,
   OrderType,
   PaymentType,
+  Payment,
 } from './amateurOrder.interface';
 
 export class CreateAmateurOrderDto {
@@ -11,6 +12,7 @@ export class CreateAmateurOrderDto {
   readonly mobile: string;
   readonly photos: AmateurPhotos[];
   readonly items: AmateurItems[];
+  readonly payment: Payment[];
   readonly total: number;
   readonly orderStatus: OrderType;
   readonly paymentStatus: PaymentType;
