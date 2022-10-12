@@ -44,4 +44,12 @@ export class EventOrderController {
   ) {
     return this.eventOrderService.updateEventOrderPayment(id, udpateOrderDto);
   }
+
+  @Patch('/:id')
+  async upadteEventOrder(
+    @Param('id') id: string,
+    @Body() udpateOrderDto: EventOrderDocument,
+  ) {
+    return this.eventOrderService.updateEventOrder(id, udpateOrderDto);
+  }
 }
