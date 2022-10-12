@@ -108,4 +108,24 @@ export class EventOrderService {
       );
     }
   }
+
+  async updateEventOrder(
+    id: string,
+    updateOrderDto: EventOrderDocument,
+  ): Promise<any> {
+    try {
+      const result = await this.eventOrderModel.updateOne(
+        { _id: id },
+        updateOrderDto,
+      );
+      if (result) {
+        return { message: 'Event order updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Event Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }
