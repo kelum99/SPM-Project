@@ -31,10 +31,65 @@
   background-color: #001529;
   width: 500px;
   color: #ffff;
+  margin: 2%;
 }
 .checkboxes {
   width: 250px;
 }
 .checkboxes2 {
   width: 150px;
+}
+.amateurOrderTable {
+  display: flex;
+  flex-direction: row;
+}
+.horizontalDivider {
+  display: none;
+}
+.cards {
+  display: none;
+}
+.card-record {
+  display: flex;
+  flex-direction: row;
+}
+.card-label {
+  font-weight: 700;
+  margin-right: 2%;
+}
+.header-edit-add {
+  margin: 2%;
+  font-size: 20px;
+}
+.paydiv {
+  display: flex;
+  flex-direction: row;
+  margin-left: 25%;
+}
+@media only screen and (max-width: 768px) {
+  .amateurOrderTable {
+    display: flex;
+    flex-direction: column;
+  }
+  .verticalDivider {
+    display: none;
+  }
+  .orderHeader {
+    width: 250px;
+  }
+  .horizontalDivider {
+    display: block;
+    background-color: black;
+  }
+  .cards {
+    display: flex;
+    flex-direction: column;
+  }
+  .table-container {
+    display: none;
+  }
+  .paydiv {
+    display: flex;
+    flex-direction: column;
+  }
 }
