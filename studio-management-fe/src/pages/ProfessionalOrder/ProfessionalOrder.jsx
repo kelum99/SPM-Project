@@ -203,9 +203,9 @@ const ProfessionalOrder = () => {
               icon={<EyeOutlined />}
               onClick={() => setSelectedOrder(record)}
             />
-            <Modal title="payment">
+            {/* <Modal title="payment">
               <p>Hello</p>
-            </Modal>
+            </Modal> */}
             <Popconfirm
               content={content}
               title="Are you sure to delete this order?"
@@ -304,17 +304,17 @@ const ProfessionalOrder = () => {
                   labelCol={{ ...layout.labelCol, span: 12 }}
                   label="Notes">
                   <Input.TextArea placeholder="Any Notes !" />
-                  <Form.Item
-                    name="orderDate"
-                    style={{
-                      marginTop: 30,
-                      marginLeft: -95
-                    }}
-                    label="Order Date"
-                    rules={[{ required: true, message: 'Enter order date!' }]}>
-                    <DatePicker placeholder="Enter Date" style={{ width: '50%' }} />
-                  </Form.Item>
                 </Form.Item>
+                {/* <Form.Item
+                  name="orderDate"
+                  style={{
+                    marginTop: 30,
+                    marginLeft: -95
+                  }}
+                  label="Order Date"
+                  rules={[{ required: true, message: 'Enter order date!' }]}>
+                  <DatePicker placeholder="Enter Date" style={{ width: '50%' }} />
+                </Form.Item> */}
               </fieldset>
               <br />
               <br />

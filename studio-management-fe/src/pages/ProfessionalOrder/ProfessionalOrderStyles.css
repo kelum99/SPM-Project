@@ -21,4 +21,36 @@
     margin-right: 20px;
     margin-top: 60px;
   }
+
+  .actionGrp {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .detailText {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .detailKey {
+    color: grey;
+  }
+  .detailValue {
+    margin-left: 3px;
+    color: black;
+  }
+  .receipt {
+    width: 32%;
+    padding: 0 10px;
+    border-left: 1px solid #d9d9d9;
+  }
+  .receiptDetails {
+    margin-left: 10px;
+    padding: 5px 10px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  }
+
+  .tableContainer {
+    margin: 15px 0;
+  }
   
