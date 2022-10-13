@@ -66,6 +66,37 @@
   flex-direction: row;
   margin-left: 25%;
 }
+.orderTable {
+  margin-left: 25%;
+  margin-top: 5%;
+}
+.logoPrint {
+  margin-left: 5%;
+  margin-top: 10%;
+}
+.headingdiv {
+  margin-left: 25%;
+  margin-top: 10%;
+  font-size: 20px;
+}
+.reportheaderdiv {
+  display: flex;
+  flex-direction: row;
+}
+.datediv {
+  margin-left: 5%;
+  margin-top: 3%;
+}
+.footerdiv {
+  margin-top: 3%;
+  margin-left: 60%;
+}
+.buttonGrp {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 @media only screen and (max-width: 768px) {
   .amateurOrderTable {
     display: flex;
@@ -89,6 +120,10 @@
     display: none;
   }
   .paydiv {
+    display: flex;
+    flex-direction: column;
+  }
+  .buttonGrp {
     display: flex;
     flex-direction: column;
   }
