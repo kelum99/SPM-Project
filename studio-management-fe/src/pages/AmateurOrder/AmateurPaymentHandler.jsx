@@ -17,7 +17,7 @@ import {
   PrinterOutlined,
   DownloadOutlined
 } from '@ant-design/icons';
-import './Styles.css';
+import '../EventOrder/Styles.css';
 import moment from 'moment';
 import ReactToPrint from 'react-to-print';
 import useRequest from '../../services/RequestContext';
@@ -37,7 +37,7 @@ const DetailText = (props) => {
   );
 };
 
-const PaymentHandler = (props) => {
+const AmateurPaymentHandler = (props) => {
   const { Option } = Select;
   const componentRef = useRef(null);
   const { request } = useRequest();
@@ -69,9 +69,9 @@ const PaymentHandler = (props) => {
       setCurrentPayment(
         values.payment.map((val) => val.amount).reduce((prev, curr) => prev + curr)
       );
-      const res = await request.patch(`eventOrders/eventOrderPayment/${values?._id}`, values);
+      const res = await request.patch(`amateurOrders/amateurOrderPayment/${values?._id}`, values);
       if (res) {
-        message.success('Payment Update Sucess!');
+        message.success('Payment Update Success!');
         form.resetFields();
         setRecord();
       }
@@ -205,10 +205,10 @@ const PaymentHandler = (props) => {
               </div>
               <div style={{ marginTop: 5 }}>
                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Event Order Details</Text> <br />
-                <Text>Event Order Id: {values?._id}</Text> <br />
+                <Text>Order Id: {values?._id}</Text> <br />
                 <Text>Customer Name: {values?.customer}</Text> <br />
                 <Text>Mobile: {values?.mobile}</Text> <br />
-                <Text>Event Type: {values?.eventType}</Text>
+                <Text>Order Type: Amateur Order</Text>
               </div>
               <Divider />
               <div>
@@ -230,10 +230,29 @@ const PaymentHandler = (props) => {
                             <Text>{item.item}</Text>
                           </Col>
                           <Col span={8}>
-                            <Text>1</Text>
+                            <Text>{item.amount}</Text>
                           </Col>
                           <Col span={8}>
-                            <Text>{item.price} LKR</Text>
+                            <Text>
+                              {item.itemPrice} LKR + {item.itemPrintPrice} LKR
+                            </Text>
+                          </Col>
+                        </>
+                      ))}
+                    </>
+                  )}
+                  {values?.photos && (
+                    <>
+                      {values?.photos.map((photo) => (
+                        <>
+                          <Col span={8}>
+                            <Text>{photo.photoSize}</Text>
+                          </Col>
+                          <Col span={8}>
+                            <Text>{photo.copies}</Text>
+                          </Col>
+                          <Col span={8}>
+                            <Text>{photo.printPrice} LKR</Text>
                           </Col>
                         </>
                       ))}
@@ -279,4 +298,4 @@ const PaymentHandler = (props) => {
   );
 };
 
-export default PaymentHandler;
+export default AmateurPaymentHandler;

@@ -26,16 +26,20 @@ import MainLayout from '../../components/MainLayout';
 import './Styles.css';
 import useRequest from '../../services/RequestContext';
 import PaymentHandler from './PaymentHandler';
+import moment from 'moment';
 
 const EventOrder = () => {
   const [data, setData] = useState([]);
+  const [mode, setMode] = useState('Add');
   const [items, setItems] = useState([]);
+  const [payment, setPayment] = useState();
   const [total, setTotal] = useState(0);
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState();
+  const [editOrder, setEditdOrder] = useState();
 
   const { request } = useRequest();
   const { Option } = Select;
@@ -44,11 +48,14 @@ const EventOrder = () => {
   const [form] = Form.useForm();
 
   const showModal = () => {
+    setMode('Add');
+    setEditdOrder(undefined);
     setOpen(true);
   };
 
   const handleCancel = () => {
     form.resetFields();
+    setMode('Add');
     setItems([]);
     setOpen(false);
   };
@@ -60,7 +67,8 @@ const EventOrder = () => {
         items: items,
         orderStatus: 'None',
         paymentStatus: 'None',
-        total: total
+        total: total,
+        payment: [{ amount: payment, date: Date.now() }]
       });
       if (res.status === 201) {
         message.success('Event Order Added Successfully!');
@@ -85,10 +93,30 @@ const EventOrder = () => {
   };
   const calculateTotal = () => {
     let temp = 0;
+    if (mode === 'Edit') {
+      temp = editOrder?.total;
+    }
     if (items.length > 0 && items !== undefined) {
       temp = items.map((val) => val.price).reduce((prev, curr) => prev + curr);
     }
     setTotal(temp);
+  };
+
+  const updateOrder = async (values) => {
+    try {
+      const res = await request.patch(`eventOrders/${editOrder?._id}`, {
+        ...values,
+        items: items,
+        total: total
+      });
+      if (res.status === 200) {
+        message.success('Event Order Updated!');
+        setOpen(false);
+        fetchOrders();
+      }
+    } catch (e) {
+      console.log('error deleting data', e);
+    }
   };
 
   useEffect(() => {
@@ -100,7 +128,6 @@ const EventOrder = () => {
     try {
       const res = await request.get('eventOrders');
       if (res.status === 200) {
-        //console.log('data', res.data);
         setData(res.data);
       }
     } catch (e) {
@@ -110,9 +137,9 @@ const EventOrder = () => {
     }
   };
 
-  const onClosePaymentModel = async (val) => {
-    await fetchOrders();
+  const onClosePaymentModel = async () => {
     setSelectedOrder(undefined);
+    await fetchOrders();
   };
 
   const onSearch = useCallback(
@@ -167,7 +194,20 @@ const EventOrder = () => {
       render: (_, record) => (
         <>
           <div className="actionGrp">
-            <Button icon={<EditOutlined />} />
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => {
+                setEditdOrder(record);
+                setMode('Edit');
+                setOpen(true);
+                setItems(record.items);
+                const temp = {
+                  ...record,
+                  eventDate: moment(record.eventDate)
+                };
+                form.setFieldsValue(temp);
+              }}
+            />
             <Button
               style={{ margin: '0px 10px' }}
               icon={<EyeOutlined />}
@@ -212,29 +252,33 @@ const EventOrder = () => {
           <Modal
             maskClosable={false}
             width={1080}
-            title="Add Event Order"
+            title={mode === 'Add' ? 'Add Event Order' : 'Edit Event Order'}
             visible={open}
             onOk={() => form.submit()}
             onCancel={handleCancel}
-            footer={[
-              <Typography.Text style={{ float: 'left' }} strong key="total">
-                Total : {total} LKR
-              </Typography.Text>,
-              <Button key="back" onClick={handleCancel}>
-                Cancel
-              </Button>,
-              <Button key="submit" type="primary" onClick={() => form.submit()}>
-                Add Order
-              </Button>
-            ]}>
-            <Form layout="vertical" form={form} onFinish={onFinish}>
+            footer={
+              <div>
+                <Typography.Text style={{ float: 'left' }} strong key="total">
+                  Total : {total} LKR
+                </Typography.Text>
+
+                <Button key="back" onClick={handleCancel}>
+                  Cancel
+                </Button>
+
+                <Button key="submit" type="primary" onClick={() => form.submit()}>
+                  {mode === 'Add' ? 'Add Order' : 'Update Order'}
+                </Button>
+              </div>
+            }>
+            <Form layout="vertical" form={form} onFinish={mode === 'Add' ? onFinish : updateOrder}>
               <Row gutter={[24, 24]}>
                 <Col span={12}>
                   <Form.Item
                     label="Customer Name"
                     name="customer"
                     rules={[{ required: true, message: 'Customer Name is required' }]}>
-                    <Input placeholder="Enter Customer Name" />
+                    <Input value={editOrder?.customer} placeholder="Enter Customer Name" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -243,6 +287,7 @@ const EventOrder = () => {
                     name="mobile"
                     rules={[{ required: true, message: 'Contact Number is required' }]}>
                     <InputNumber
+                      value={editOrder?.mobile}
                       style={{ width: '60%' }}
                       controls={false}
                       placeholder="Enter Contact Number"
@@ -284,12 +329,23 @@ const EventOrder = () => {
                     rules={[{ required: true, message: 'Event Date is required' }]}>
                     <DatePicker placeholder="Select Date" />
                   </Form.Item>
+                  <Form.Item label="Payment" required name="paymentX">
+                    <InputNumber
+                      min={0}
+                      controls={false}
+                      style={{ width: '70%' }}
+                      disabled={mode === 'Edit'}
+                      placeholder="Enter Payment"
+                      addonAfter={<Typography.Text>LKR</Typography.Text>}
+                      onChange={(value) => setPayment(value)}
+                    />
+                  </Form.Item>
                 </Col>
                 <Col span={16}>
                   <div style={{ border: '1px solid #c6c6c6', padding: 10 }}>
                     <Form.Item label="Items" name="items">
                       <Input.Group compact>
-                        <Form.Item style={{ width: '35%' }} name={['items', 'item']}>
+                        <Form.Item style={{ width: '35%' }} name={['Items', 'item']}>
                           <Select
                             placeholder="Select Item"
                             onChange={() => {
@@ -302,13 +358,13 @@ const EventOrder = () => {
                             <Option value="Framed Photos">Framed Photos</Option>
                           </Select>
                         </Form.Item>
-                        <Form.Item style={{ marginLeft: 5 }} name={['items', 'price']}>
+                        <Form.Item style={{ marginLeft: 5 }} name={['Items', 'price']}>
                           <InputNumber
                             min={0}
                             controls={false}
                             style={{ width: '80%' }}
                             placeholder="Enter Price"
-                            addonBefore={<Typography.Text>LKR</Typography.Text>}
+                            addonAfter={<Typography.Text>LKR</Typography.Text>}
                             onChange={() => setError(undefined)}
                           />
                         </Form.Item>
@@ -318,13 +374,13 @@ const EventOrder = () => {
                           style={{ marginLeft: 16 }}
                           onClick={() => {
                             if (
-                              form.getFieldValue(['items', 'item']) !== undefined &&
-                              form.getFieldValue(['items', 'price']) !== undefined
+                              form.getFieldValue(['Items', 'item']) !== undefined &&
+                              form.getFieldValue(['Items', 'price']) !== undefined
                             ) {
                               setError(undefined);
                               setAddVisible(false);
-                              setItems([...items, form.getFieldValue('items')]);
-                              form.resetFields([['items', 'item'], ['items', 'price']]);
+                              setItems([...items, form.getFieldValue('Items')]);
+                              form.resetFields([['Items', 'item'], ['Items', 'price']]);
                             } else {
                               setError('Item or price cannot be empty!');
                             }
@@ -357,9 +413,18 @@ const EventOrder = () => {
           </Modal>
         </div>
         <div className="tableContainer">
-          <Table dataSource={data} columns={columns} loading={loading} />
+          <Table
+            rowKey={(record) => record._id}
+            dataSource={data}
+            columns={columns}
+            loading={loading}
+          />
         </div>
-        <PaymentHandler visible={selectedOrder !== undefined} onCancel={onClosePaymentModel} />
+        <PaymentHandler
+          visible={!!selectedOrder}
+          onCancel={onClosePaymentModel}
+          record={selectedOrder}
+        />
       </div>
     </MainLayout>
   );

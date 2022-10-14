@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   EventItems,
   OrderType,
+  Payment,
   PaymentType,
 } from '../dto/eventOrder.interface';
 
@@ -14,6 +15,9 @@ export class EventOrder {
 
   @Prop({ required: true })
   mobile: string;
+
+  @Prop({ required: true })
+  address: string;
 
   @Prop({ required: true })
   eventType: string;
@@ -35,6 +39,9 @@ export class EventOrder {
 
   @Prop({ required: true })
   orderDate: Date;
+
+  @Prop()
+  payment: Payment[];
 
   @Prop()
   note: string;

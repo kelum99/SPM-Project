@@ -48,4 +48,53 @@ export class AmateurOrderService {
       );
     }
   }
+
+  async removeAmateurOrder(id: string) {
+    try {
+      const result = await this.amateurOrderModel.deleteOne({ _id: id });
+      if (result && result.deletedCount === 1) {
+        return { message: 'Amateur Order deleted!' };
+      }
+      return { message: 'No Order found!' };
+    } catch (e) {
+      console.log('delete amateur order error ', e);
+      throw new HttpException(
+        'Error deleting amateur order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async updateAmateurOrderPayment(
+    id: string,
+    updateOrderDto: AmateurOrderDocument,
+  ): Promise<any> {
+    try {
+      const { payment, orderStatus, total } = updateOrderDto;
+      const currentPay = payment
+        .map((val) => val.amount)
+        .reduce((prev, curr) => prev + curr);
+      let payStatus = 'None';
+
+      if (currentPay < total) {
+        payStatus = 'Advance';
+      } else if (currentPay >= total) {
+        payStatus = 'Completed';
+      } else {
+        payStatus = 'None';
+      }
+      const result = await this.amateurOrderModel.updateOne(
+        { _id: id },
+        { paymentStatus: payStatus, payment, orderStatus },
+      );
+      if (result) {
+        return { message: 'Amateur order updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Amateur Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }

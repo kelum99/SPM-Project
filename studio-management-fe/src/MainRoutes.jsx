@@ -22,6 +22,7 @@ export default function MainRoutes() {
         <Route path="/viewCustomer" element={<ViewCustomer />} />
         <Route path="/amateurOrder" element={<AmateurOrder />} />
         <Route path="/addAmateurOrder" element={<AddAmateurOrder />} />
+        <Route path="/editAmateurOrder/:id" element={<AddAmateurOrder />} />
       </Routes>
     </>
   );

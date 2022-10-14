@@ -4,6 +4,7 @@ import {
   AmateurPhotos,
   OrderType,
   PaymentType,
+  Payment,
 } from '../dto/amateurOrder.interface';
 
 export type AmateurOrderDocument = AmateurOrder & Document;
@@ -36,6 +37,9 @@ export class AmateurOrder {
 
   @Prop({ required: true })
   orderDate: Date;
+
+  @Prop()
+  payment: Payment[];
 
   @Prop()
   note: string;

@@ -13,9 +13,23 @@ export class EventOrderService {
 
   async create(createDto: CreateEventOrderDto): Promise<EventOrder> {
     try {
+      const { payment, total } = createDto;
+      const currentPay = payment
+        .map(val => val.amount)
+        .reduce((prev, curr) => prev + curr);
+      let payStatus = 'None';
+
+      if (currentPay < total) {
+        payStatus = 'Advance';
+      } else if (currentPay >= total) {
+        payStatus = 'Completed';
+      } else {
+        payStatus = 'None';
+      }
       const createdItem = new this.eventOrderModel({
         ...createDto,
         orderDate: Date.now(),
+        paymentStatus: payStatus,
       });
       return createdItem.save();
     } catch {
@@ -57,6 +71,59 @@ export class EventOrderService {
       console.log('delete prof order error ', e);
       throw new HttpException(
         'Error deleting professional order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async updateEventOrderPayment(
+    id: string,
+    updateOrderDto: EventOrderDocument,
+  ): Promise<any> {
+    try {
+      const { payment, orderStatus, total } = updateOrderDto;
+      const currentPay = payment
+        .map(val => val.amount)
+        .reduce((prev, curr) => prev + curr);
+      let payStatus = 'None';
+
+      if (currentPay < total) {
+        payStatus = 'Advance';
+      } else if (currentPay >= total) {
+        payStatus = 'Completed';
+      } else {
+        payStatus = 'None';
+      }
+      const result = await this.eventOrderModel.updateOne(
+        { _id: id },
+        { paymentStatus: payStatus, payment, orderStatus },
+      );
+      if (result) {
+        return { message: 'Event order updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Event Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async updateEventOrder(
+    id: string,
+    updateOrderDto: EventOrderDocument,
+  ): Promise<any> {
+    try {
+      const result = await this.eventOrderModel.updateOne(
+        { _id: id },
+        updateOrderDto,
+      );
+      if (result) {
+        return { message: 'Event order updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Event Order',
         HttpStatus.BAD_REQUEST,
       );
     }
