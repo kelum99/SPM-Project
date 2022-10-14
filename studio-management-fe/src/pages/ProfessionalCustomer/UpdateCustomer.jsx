@@ -3,7 +3,7 @@ import MainLayout from '../../components/MainLayout';
 import { Button, DatePicker, Form, Input, InputNumber, message } from 'antd';
 import useRequest from '../../services/RequestContext';
 import { useNavigate } from 'react-router-dom';
-const AddCustomer = () => {
+const UpdateCustomer = () => {
   const { request } = useRequest();
   const navigate = useNavigate();
   const onFinish = async (values) => {
@@ -11,7 +11,7 @@ const AddCustomer = () => {
       console.log('xx', values);
       const res = await request.post('professionalCustomer/add', values);
       if (res.status === 201) {
-        message.success('Professional Customer Added Successfully!');
+        message.success('Professional Customer Updated Successfully!');
         navigate('/professionalCustomer', { replace: true });
       }
     } catch (e) {
@@ -19,7 +19,7 @@ const AddCustomer = () => {
     }
   };
   return (
-    <MainLayout title="Add Customer">
+    <MainLayout title="Update Customer">
       <div style={{ width: 700 }}>
         <Form onFinish={onFinish} layout="vertical">
           <Form.Item
@@ -70,7 +70,7 @@ const AddCustomer = () => {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Add Customer
+              Update Customer
             </Button>
           </Form.Item>
         </Form>
@@ -79,4 +79,4 @@ const AddCustomer = () => {
   );
 };
 
-export default AddCustomer;
+export default UpdateCustomer;

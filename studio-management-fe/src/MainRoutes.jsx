@@ -6,7 +6,9 @@ import ProfessionalOrder from './pages/ProfessionalOrder/ProfessionalOrder';
 import ProfessionalCustomer from './pages/ProfessionalCustomer/ProfessionalCustomer';
 import AmateurOrder from './pages/AmateurOrder/AmateurOrder';
 import AddCustomer from './pages/ProfessionalCustomer/AddCustomer';
+import UpdateCustomer from './pages/ProfessionalCustomer/UpdateCustomer';
 import AddAmateurOrder from './pages/AmateurOrder/AddAmateurOrder';
+import ViewCustomer from './pages/ProfessionalCustomer/ViewCustomer';
 export default function MainRoutes() {
   return (
     <>
@@ -16,6 +18,8 @@ export default function MainRoutes() {
         <Route path="/professionalOrder" element={<ProfessionalOrder />} />
         <Route path="/professionalCustomer" element={<ProfessionalCustomer />} />
         <Route path="/addCustomer" element={<AddCustomer />} />
+        <Route path="/updateCustomer" element={<UpdateCustomer />} />
+        <Route path="/viewCustomer" element={<ViewCustomer />} />
         <Route path="/amateurOrder" element={<AmateurOrder />} />
         <Route path="/addAmateurOrder" element={<AddAmateurOrder />} />
       </Routes>
