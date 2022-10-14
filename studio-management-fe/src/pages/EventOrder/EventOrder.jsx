@@ -380,10 +380,7 @@ const EventOrder = () => {
                               setError(undefined);
                               setAddVisible(false);
                               setItems([...items, form.getFieldValue('Items')]);
-                              form.resetFields([
-                                ['Items', 'item'],
-                                ['Items', 'price']
-                              ]);
+                              form.resetFields([['Items', 'item'], ['Items', 'price']]);
                             } else {
                               setError('Item or price cannot be empty!');
                             }

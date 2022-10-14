@@ -1,0 +1,21 @@
+.mButton {
+  margin: 2%;
+}
+.amateurSearch {
+  width: 250px;
+  margin: 2%;
+  margin-left: 20px;
+  margin-right: 1168px;
+  display: inline-flex;
+}
+.rButton {
+  margin-left: 20px;
+  margin-right: 1168px;
+  margin-bottom: 0%;
+}
+.actionButton {
+  margin: 20px;
+  margin-bottom: 85px;
+  margin-top: 1px;
+  display: inline-flex;
+}
