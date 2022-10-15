@@ -2,11 +2,8 @@
   margin: 2%;
 }
 .amateurSearch {
-  width: 250px;
-  margin: 2%;
-  margin-left: 20px;
-  margin-right: 1168px;
-  display: inline-flex;
+  width: 500px;
+  float: right;
 }
 .rButton {
   margin-left: 20px;
@@ -18,4 +15,16 @@
   margin-bottom: 85px;
   margin-top: 1px;
   display: inline-flex;
+}
+.detailText {
+  display: flex;
+  flex-direction: row;
+  margin: 5px 0px;
+}
+.detailKey {
+  color: grey;
+}
+.detailValue {
+  margin-left: 3px;
+  color: black;
 }
