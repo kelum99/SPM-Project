@@ -47,4 +47,12 @@ export class AmateurOrderController {
       udpateOrderDto,
     );
   }
+
+  @Patch('/:id')
+  async upadteAmateurOrder(
+    @Param('id') id: string,
+    @Body() udpateOrderDto: AmateurOrderDocument,
+  ) {
+    return this.amateurOrderService.updateAmateurOrder(id, udpateOrderDto);
+  }
 }

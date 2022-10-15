@@ -78,7 +78,7 @@ export class CustomerService {
       }
     } catch {
       throw new HttpException(
-        'Error Updating Event Order',
+        'Error Updating ProfessionalCustomer',
         HttpStatus.BAD_REQUEST,
       );
     }

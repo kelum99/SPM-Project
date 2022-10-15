@@ -10,8 +10,8 @@ export class CreateAmateurOrderDto {
   readonly customer: string;
   readonly address: string;
   readonly mobile: string;
-  readonly photos: AmateurPhotos[];
-  readonly items: AmateurItems[];
+  readonly photos: AmateurPhotos;
+  readonly items: AmateurItems;
   readonly payment: Payment[];
   readonly total: number;
   readonly orderStatus: OrderType;
