@@ -45,7 +45,7 @@ const PaymentHandler = (props) => {
   const [form] = Form.useForm();
   const [payment, setPayment] = useState({});
   const [currentPayment, setCurrentPayment] = useState();
-  const [orderStatus, setOrderStatus] = useState();
+  const [paymentStatus, setPaymentStatus] = useState();
   const [values, setValues] = useState();
 
   const setRecord = () => {
@@ -54,7 +54,7 @@ const PaymentHandler = (props) => {
     setCurrentPayment(
       props?.record?.payment.map((val) => val.amount).reduce((prev, curr) => prev + curr)
     );
-    setOrderStatus(props?.record?.orderStatus);
+    setPaymentStatus(props?.record?.orderStatus);
   };
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const PaymentHandler = (props) => {
       if (payment.amount > 0) {
         values.payment.push(payment);
       }
-      values.orderStatus = orderStatus;
+      values.paymentStatus = paymentStatus;
       setCurrentPayment(
         values.payment.map((val) => val.amount).reduce((prev, curr) => prev + curr)
       );
@@ -150,13 +150,16 @@ const PaymentHandler = (props) => {
                   <DetailText title="Total" value={values?.total + ' LKR'} />
                 </Col>
                 <Col span={12}>
-                  <DetailText title="Note" value={values?.note} />
+                  <DetailText title="Note" value={values?.notes} />
                 </Col>
                 <Col span={12}>
                   <DetailText title="Payment Status" value={values?.paymentStatus} />
                 </Col>
-                <Col span={12}>
+                {/* <Col span={12}>
                   <DetailText title="Order Status" value={values?.orderStatus} />
+                </Col> */}
+                <Col span={12}>
+                  <DetailText title="Order Type" value={values?.orderType} />
                 </Col>
               </Row>
               <Divider />
@@ -180,16 +183,16 @@ const PaymentHandler = (props) => {
                   )}
 
                   <div>
-                    <Text>Order Status</Text> <br />
+                    {/* <Text>Order Status</Text> <br />
                     <Select
                       name="status"
-                      value={orderStatus ?? 'None'}
-                      onChange={(value) => setOrderStatus(value)}
+                      value={paymentStatus ?? 'None'}
+                      onChange={(value) => setPaymentStatus(value)}
                       style={{ width: 170 }}>
                       <Option value="None">None</Option>
                       <Option value="In-progress">In-progress</Option>
                       <Option value="Completed">Completed</Option>
-                    </Select>
+                    </Select> */}
                   </div>
                 </div>
               </div>
@@ -215,34 +218,9 @@ const PaymentHandler = (props) => {
               </div>
               <Divider />
               <div>
-                <Row gutter={[24, 8]}>
-                  <Col span={8}>
-                    <Text strong>Details</Text>
-                  </Col>
-                  <Col span={8}>
-                    <Text strong>Quantity</Text>
-                  </Col>
-                  <Col span={8}>
-                    <Text strong>Price</Text>
-                  </Col>
-                  {values?.items && (
-                    <>
-                      {values?.items.map((item) => (
-                        <>
-                          <Col span={8}>
-                            <Text>{item.item}</Text>
-                          </Col>
-                          <Col span={8}>
-                            <Text>1</Text>
-                          </Col>
-                          <Col span={8}>
-                            <Text>{item.price} LKR </Text>
-                          </Col>
-                        </>
-                      ))}
-                    </>
-                  )}
-                </Row>
+                <h3>Order Details</h3>
+                <Text>Print Price: {values?.printPrice}</Text> <br />
+                <Text>Frame Price: {values?.framePrice}</Text> <br />
               </div>
               <Divider />
               <div>
