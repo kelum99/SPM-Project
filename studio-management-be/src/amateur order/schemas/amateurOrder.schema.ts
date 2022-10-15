@@ -20,11 +20,11 @@ export class AmateurOrder {
   @Prop({ required: true })
   mobile: string;
 
-  @Prop({ required: true })
-  photos: AmateurPhotos[];
+  @Prop({ required: true, type: Object })
+  photos: AmateurPhotos;
 
-  @Prop({ required: true })
-  items: AmateurItems[];
+  @Prop({ required: true, type: Object })
+  items: AmateurItems;
 
   @Prop({ required: true })
   total: number;

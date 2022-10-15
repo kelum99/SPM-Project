@@ -30,6 +30,7 @@ import './ProfessionalOrderStyles.css';
 import PaymentHandler from './PaymentHandler';
 import moment from 'moment';
 import Col from 'antd/es/grid/col';
+import { useCallback } from 'react';
 //import Search from 'antd/lib/transfer/search';
 
 const layout = {
@@ -188,18 +189,35 @@ const ProfessionalOrder = () => {
     }
   };
 
-  const onSearch = (value) => {
-    let result = [];
-    result = data.filter((res) => {
-      if (value == '') {
-        window.location.reload(true);
-        return res;
-      } else {
-        return res.customer.toLowerCase().search(value) != -1;
+  // const onSearch = (value) => {
+  //   let result = [];
+  //   result = data.filter((res) => {
+  //     if (value == '') {
+  //       window.location.reload(true);
+  //       return res;
+  //     } else {
+  //       return res.customer.toLowerCase().search(value) != -1;
+  //     }
+  //   });
+  //   setData(result);
+  // };
+
+  const onSearch = useCallback(
+    (value) => {
+      let temp = [];
+      if (data.length > 0 && data !== undefined) {
+        if (value === '' || value === undefined) {
+          fetchOrders();
+        } else {
+          temp = data.filter(
+            (val) => val.orderType.toLowerCase().search(value.toLowerCase()) != -1
+          );
+          setData(temp);
+        }
       }
-    });
-    setData(result);
-  };
+    },
+    [data]
+  );
 
   const deleteOrder = async (id) => {
     try {

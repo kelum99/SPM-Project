@@ -45,17 +45,16 @@ const AddAmateurOrder = () => {
 
       if (result.status === 200) {
         setOrder(result.data);
-        // console.log('Order ', result.data);
+        setItem(result.data.items);
+        setPhoto(result.data.photos);
+        setTotal(result.data.total);
       }
     } catch (e) {
       console.log('Error in retreiving amateur order');
     }
   };
 
-  useEffect(() => {
-    if (!isAddMode && id) {
-      fetchAmateurOrder(id);
-    }
+  const calculateTotal = () => {
     var tot = 0;
 
     if (item.amount && item.itemPrice && item.itemPrintPrice && photo.copies && photo.printPrice) {
@@ -65,10 +64,20 @@ const AddAmateurOrder = () => {
     } else {
       tot = 0;
     }
-    console.log(tot);
     setTotal(tot);
-    document.getElementById('total').value = total;
-  }, [photo, item, total]);
+    document.getElementById('total').value = tot;
+  };
+
+  if (isAddMode) {
+    useEffect(() => {
+      calculateTotal();
+    }, [item, photo, total]);
+  } else {
+    useEffect(() => {
+      calculateTotal();
+      fetchAmateurOrder(id);
+    }, [total]);
+  }
 
   const validateMessages = {
     required: '${label} is required!',
@@ -86,7 +95,7 @@ const AddAmateurOrder = () => {
     const paymentStatus = 'None';
     try {
       const amateurOrderObj = {
-        ...values.user,
+        ...values,
         orderStatus: orderStatus,
         paymentStatus: paymentStatus,
         photos: photo,
@@ -115,8 +124,31 @@ const AddAmateurOrder = () => {
     }
   };
 
+  const updateOrder = async (values) => {
+    try {
+      const amateurOrderObj = {
+        ...values,
+        photos: photo,
+        items: item,
+        total: total
+      };
+
+      const res = await request.patch(`amateurOrders/${order?._id}`, amateurOrderObj);
+
+      console.log(amateurOrderObj);
+
+      if (res.status === 200) {
+        message.success('Amateur Order Updated!');
+        navigate(`/amateurOrder`);
+      }
+    } catch (e) {
+      console.log('error updating data', e);
+    }
+  };
+
   const onReset = () => {
     form.resetFields();
+    console.log('reset');
   };
 
   return (
@@ -130,14 +162,14 @@ const AddAmateurOrder = () => {
           {...layout}
           form={form}
           name="nest-messages"
-          onFinish={onFinish}
+          onFinish={isAddMode ? onFinish : updateOrder}
           validateMessages={validateMessages}
           key={order?._id}>
           <fieldset className="fieldset">
             <br />
             <br />
             <Form.Item
-              name={['user', 'customer']}
+              name={['customer']}
               label="Name"
               rules={[
                 {
@@ -148,7 +180,7 @@ const AddAmateurOrder = () => {
               <Input placeholder="John Smith" />
             </Form.Item>
             <Form.Item
-              name={['user', 'address']}
+              name={['address']}
               label="Address"
               rules={[
                 {
@@ -159,7 +191,7 @@ const AddAmateurOrder = () => {
               <Input placeholder="003,Colombo" />
             </Form.Item>
             <Form.Item
-              name={['user', 'mobile']}
+              name={['mobile']}
               label="Contact Number"
               rules={[
                 {
@@ -171,10 +203,7 @@ const AddAmateurOrder = () => {
               initialValue={!isAddMode ? order?.mobile : ''}>
               <Input placeholder="0767896523" />
             </Form.Item>
-            <Form.Item
-              name={['user', 'note']}
-              label="Notes"
-              initialValue={!isAddMode ? order?.note : ''}>
+            <Form.Item name={['note']} label="Notes" initialValue={!isAddMode ? order?.note : ''}>
               <Input.TextArea placeholder="Any Special Considerations(Optional)" />
             </Form.Item>
           </fieldset>
@@ -187,15 +216,15 @@ const AddAmateurOrder = () => {
                   <h2 className="orderHeader">Photo</h2>
                   <Form.Item
                     labelCol={{ ...layout.labelCol, span: 8 }}
-                    name={['user', 'orderType']}
+                    name={['orderType']}
                     label="Order Type"
                     rules={[
                       {
                         required: true
                       }
-                    ]}>
+                    ]}
+                    initialValue={photo?.orderType}>
                     <Radio.Group
-                      defaultValue={!isAddMode ? order?.photos[0].orderType : ''}
                       onChange={(value) => setPhoto({ ...photo, orderType: value.target.value })}>
                       <Radio.Button value="Copy Out">Copy Out</Radio.Button>
                       <Radio.Button value="Media">Media</Radio.Button>
@@ -205,14 +234,14 @@ const AddAmateurOrder = () => {
 
                   <Form.Item
                     labelCol={{ ...layout.labelCol, span: 8 }}
-                    name={['user', 'photoSize']}
+                    name={['photoSize']}
                     label="Photo Size"
                     rules={[
                       {
                         required: true
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.photos[0].photoSize : ''}>
+                    initialValue={photo?.photoSize}>
                     <Select
                       onChange={(value) => setPhoto({ ...photo, photoSize: value })}
                       className="dropdown"
@@ -234,14 +263,15 @@ const AddAmateurOrder = () => {
                   </Form.Item>
                   <Form.Item
                     labelCol={{ ...layout.labelCol, span: 8 }}
-                    name={['user', 'copies']}
+                    name={['copies']}
                     label="Copies"
                     rules={[
                       {
-                        required: true
+                        required: true,
+                        type: 'number'
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.photos[0].copies : ''}>
+                    initialValue={photo?.copies}>
                     <InputNumber
                       onChange={(value) => setPhoto({ ...photo, copies: value })}
                       placeholder="0"
@@ -252,20 +282,21 @@ const AddAmateurOrder = () => {
                   </Form.Item>
                   <Form.Item
                     labelCol={{ ...layout.labelCol, span: 8 }}
-                    name={['user', 'printPrice']}
+                    name={['printPrice']}
                     label="Print Price"
                     rules={[
                       {
                         required: true
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.photos[0].printPrice : ''}>
+                    initialValue={photo?.printPrice}>
                     <Input
                       onChange={(value) => setPhoto({ ...photo, printPrice: value.target.value })}
                       placeholder="Rs 0.00"
                       style={{
                         width: 230
                       }}
+                      addonAfter={<Typography.Text>LKR</Typography.Text>}
                     />
                   </Form.Item>
 
@@ -274,8 +305,8 @@ const AddAmateurOrder = () => {
                       <td className="checkboxes">
                         <Form.Item
                           valuePropName="checked"
-                          name={['user', 'frame']}
-                          initialValue={!isAddMode ? order?.photos[0].frame : ''}>
+                          name={['frame']}
+                          initialValue={photo?.frame}>
                           <Checkbox
                             onChange={(value) =>
                               setPhoto({ ...photo, frame: value.target.checked })
@@ -287,8 +318,8 @@ const AddAmateurOrder = () => {
                       <td className="checkboxes2">
                         <Form.Item
                           valuePropName="checked"
-                          name={['user', 'laminate']}
-                          initialValue={!isAddMode ? order?.photos[0].laminate : ''}>
+                          name={['laminate']}
+                          initialValue={photo?.laminate}>
                           <Checkbox
                             onChange={(value) =>
                               setPhoto({ ...photo, laminate: value.target.checked })
@@ -308,14 +339,14 @@ const AddAmateurOrder = () => {
                 <div className="itemdiv">
                   <h2 className="orderHeader">Item</h2>
                   <Form.Item
-                    name={['user', 'item']}
+                    name={['item']}
                     label="Item"
                     rules={[
                       {
                         required: true
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.items[0].item : ''}>
+                    initialValue={item?.item}>
                     <Select
                       onChange={(value) => setItem({ ...item, item: value })}
                       className="dropdown"
@@ -334,7 +365,7 @@ const AddAmateurOrder = () => {
                     </Select>
                   </Form.Item>
                   <Form.Item
-                    name={['user', 'amount']}
+                    name={['amount']}
                     label="Amount"
                     rules={[
                       {
@@ -344,7 +375,7 @@ const AddAmateurOrder = () => {
                         max: 99
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.items[0].amount : ''}>
+                    initialValue={item?.amount}>
                     <InputNumber
                       onChange={(value) => setItem({ ...item, amount: value })}
                       placeholder="0"
@@ -354,37 +385,39 @@ const AddAmateurOrder = () => {
                     />
                   </Form.Item>
                   <Form.Item
-                    name={['user', 'itemPrice']}
+                    name={['itemPrice']}
                     label="Item Price"
                     rules={[
                       {
                         required: true
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.items[0].itemPrice : ''}>
+                    initialValue={item?.itemPrice}>
                     <Input
                       onChange={(value) => setItem({ ...item, itemPrice: value.target.value })}
                       placeholder="Rs 0.00"
                       style={{
                         width: 230
                       }}
+                      addonAfter={<Typography.Text>LKR</Typography.Text>}
                     />
                   </Form.Item>
                   <Form.Item
-                    name={['user', 'itemPrintPrice']}
+                    name={['itemPrintPrice']}
                     label="Print Price"
                     rules={[
                       {
                         required: true
                       }
                     ]}
-                    initialValue={!isAddMode ? order?.items[0].itemPrintPrice : ''}>
+                    initialValue={item?.itemPrintPrice}>
                     <Input
                       onChange={(value) => setItem({ ...item, itemPrintPrice: value.target.value })}
                       placeholder="Rs 0.00"
                       style={{
                         width: 230
                       }}
+                      addonAfter={<Typography.Text>LKR</Typography.Text>}
                     />
                   </Form.Item>
                   <br />
@@ -400,10 +433,10 @@ const AddAmateurOrder = () => {
             <Form.Item
               labelCol={{ ...layout.labelCol, span: 10 }}
               wrapperCol={{ ...layout.wrapperCol, span: 4 }}
-              name={['user', 'total']}
+              name={['total']}
               label="Total Price"
-              initialValue={!isAddMode ? order?.total : total}>
-              <Input
+              initialValue={total}>
+              <InputNumber
                 id="total"
                 disabled
                 addonAfter={<Typography.Text>LKR</Typography.Text>}
@@ -416,7 +449,7 @@ const AddAmateurOrder = () => {
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Form.Item
               label="Payment"
-              name={['user', 'payment']}
+              name={['payment']}
               required
               labelCol={{ ...layout.labelCol, span: 10 }}
               wrapperCol={{ ...layout.wrapperCol, span: 4 }}>
@@ -425,6 +458,7 @@ const AddAmateurOrder = () => {
                 controls={false}
                 style={{ width: '200px' }}
                 placeholder="0"
+                disabled={!isAddMode}
                 addonAfter={<Typography.Text>LKR</Typography.Text>}
                 onChange={(value) => setPayment(value)}
               />
@@ -436,7 +470,7 @@ const AddAmateurOrder = () => {
             <div className="buttonGrp">
               <div className="actionButton">
                 <Button type="primary" htmlType="submit">
-                  Submit
+                  {isAddMode ? 'Submit' : 'Update'}
                 </Button>
               </div>
 
