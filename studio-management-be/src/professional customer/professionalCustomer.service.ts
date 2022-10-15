@@ -63,4 +63,24 @@ export class CustomerService {
       );
     }
   }
+
+  async updateProfessionalCustomer(
+    id: string,
+    udpateCustomerDto: ProfessionalCustomerDocument,
+  ): Promise<any> {
+    try {
+      const result = await this.serviceModel.updateOne(
+        { _id: id },
+        udpateCustomerDto,
+      );
+      if (result) {
+        return { message: 'ProfessionalCustomer updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Event Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }

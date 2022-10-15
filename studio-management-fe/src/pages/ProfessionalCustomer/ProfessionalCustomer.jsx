@@ -1,12 +1,13 @@
 import React from 'react';
 import MainLayout from '../../components/MainLayout';
-import { Button, Table, Input } from 'antd';
+import { Button, Table, Input, Popconfirm, message } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   EyeOutlined,
   DeleteOutlined,
-  SearchOutlined
+  SearchOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons';
 
 import useRequest from '../../services/RequestContext';
@@ -28,6 +29,18 @@ const ProfessionalCustomer = () => {
       }}
     />
   );
+
+  const deleteProfessionalCustomer = async (id) => {
+    try {
+      const res = await request.delete(`professionalCustomer/${id}`);
+      if (res.status === 200) {
+        fetchProfessionalCustomer();
+        message.success('Order Successfully Deleted!');
+      }
+    } catch (e) {
+      console.log('error deleting data', e);
+    }
+  };
 
   const fetchProfessionalCustomer = async () => {
     setLoading(true);
@@ -83,12 +96,24 @@ const ProfessionalCustomer = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <>
           <div className="actionGrp">
             <Button icon={<EditOutlined />} />
             <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} />
-            <Button danger icon={<DeleteOutlined />} />
+            <Popconfirm
+              icon={
+                <QuestionCircleOutlined
+                  style={{
+                    color: 'red'
+                  }}
+                />
+              }
+              title="Are you sure to delete this customer?"
+              okText="Delete"
+              onConfirm={() => deleteProfessionalCustomer(record._id)}>
+              <Button danger icon={<DeleteOutlined />} />
+            </Popconfirm>
           </div>
         </>
       )
