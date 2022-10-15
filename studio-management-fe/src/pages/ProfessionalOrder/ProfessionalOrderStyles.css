@@ -10,7 +10,47 @@
     width: 600px;
   }
   .porderHeader {
-    margin-left: 40px;
+    margin-left: -10px;
+    margin-right: 680px;
+  }
+  .professionalSearch {
+    width: 250px;
+    height: 100px;
+    margin: 2%;
+    margin-left: -100px;
+    margin-right: 20px;
+    margin-top: 30px;
   }
 
+  .actionGrp {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .detailText {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .detailKey {
+    color: grey;
+  }
+  .detailValue {
+    margin-left: 3px;
+    color: black;
+  }
+  .receipt {
+    width: 32%;
+    padding: 0 10px;
+    border-left: 1px solid #d9d9d9;
+  }
+  .receiptDetails {
+    margin-left: 10px;
+    padding: 5px 10px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  }
+
+  .tableContainer {
+    margin: 15px 0;
+  }
   
