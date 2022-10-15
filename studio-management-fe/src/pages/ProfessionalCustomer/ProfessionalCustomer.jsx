@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '../../components/MainLayout';
-import { Button, Table, Input, Popconfirm, message } from 'antd';
+import { Button, Table, Input, Popconfirm, message, Typography } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
@@ -13,14 +13,15 @@ import {
 import useRequest from '../../services/RequestContext';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 const ProfessionalCustomer = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
   const { Search } = Input;
-
+  const navigate = useNavigate();
   const prefix = (
     <SearchOutlined
       style={{
@@ -90,7 +91,10 @@ const ProfessionalCustomer = () => {
     {
       title: 'Join Date',
       dataIndex: 'joinDate',
-      key: 'joinDate'
+      key: 'joinDate',
+      render: (_, record) => (
+        <Typography.Text>{moment(record.joinDate).format('YYYY-MM-DD')}</Typography.Text>
+      )
     },
     {
       title: 'Action',
@@ -99,8 +103,15 @@ const ProfessionalCustomer = () => {
       render: (_, record) => (
         <>
           <div className="actionGrp">
-            <Button icon={<EditOutlined />} />
-            <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} />
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => navigate(`updateCustomer/${record._id}`)}
+            />
+            <Button
+              style={{ margin: '0px 10px' }}
+              onClick={() => navigate(`viewCustomer/${record._id}`)}
+              icon={<EyeOutlined />}
+            />
             <Popconfirm
               icon={
                 <QuestionCircleOutlined

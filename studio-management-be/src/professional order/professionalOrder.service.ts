@@ -87,7 +87,7 @@ export class ProfessionalOrderService {
     updateOrderDto: ProfessionalOrderDocument,
   ): Promise<any> {
     try {
-      const { payment,  total } = updateOrderDto;
+      const { payment, total } = updateOrderDto;
       const currentPay = payment
         .map((val) => val.amount)
         .reduce((prev, curr) => prev + curr);

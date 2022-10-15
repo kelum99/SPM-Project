@@ -18,8 +18,8 @@ export default function MainRoutes() {
         <Route path="/professionalOrder" element={<ProfessionalOrder />} />
         <Route path="/professionalCustomer" element={<ProfessionalCustomer />} />
         <Route path="/addCustomer" element={<AddCustomer />} />
-        <Route path="/updateCustomer" element={<UpdateCustomer />} />
-        <Route path="/viewCustomer" element={<ViewCustomer />} />
+        <Route path="/professionalCustomer/updateCustomer/:id" element={<UpdateCustomer />} />
+        <Route path="/professionalCustomer/viewCustomer/:id" element={<ViewCustomer />} />
         <Route path="/amateurOrder" element={<AmateurOrder />} />
         <Route path="/addAmateurOrder" element={<AddAmateurOrder />} />
         <Route path="/editAmateurOrder/:id" element={<AddAmateurOrder />} />

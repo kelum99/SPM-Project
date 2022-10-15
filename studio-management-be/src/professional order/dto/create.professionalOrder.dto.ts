@@ -1,10 +1,4 @@
-
-import{
-  Payment,
-  PaymentType,
-  
-  
-} from './professionalOrder.interface';
+import { Payment, PaymentType } from './professionalOrder.interface';
 
 export class CreateProfessionalOrderDto {
   readonly customer: string;
@@ -18,7 +12,6 @@ export class CreateProfessionalOrderDto {
   readonly ceremonyDate: Date;
   readonly orderDate: Date;
   readonly payment: Payment[];
-  
   readonly total: number;
   _id?: string;
 }

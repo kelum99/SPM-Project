@@ -1,27 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MainLayout from '../../components/MainLayout';
-import { Button, Table, Input, Card } from 'antd';
+import { Button, Table, Input, Card, Typography } from 'antd';
 import './ProfessionalCustomerStyles.css';
-import {
-  PlusOutlined,
-  EditOutlined,
-  EyeOutlined,
-  DeleteOutlined,
-  DownloadOutlined,
-  SearchOutlined
-} from '@ant-design/icons';
-
+import { SearchOutlined } from '@ant-design/icons';
 import useRequest from '../../services/RequestContext';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import moment from 'moment';
+
+const { Text } = Typography;
+
+const DetailText = (props) => {
+  return (
+    <div className="detailText">
+      <Text strong className="detailKey">
+        {props.title} :
+      </Text>
+      <Text strong className="detailValue">
+        {props.value}
+      </Text>
+    </div>
+  );
+};
 
 const ViewCustomer = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
+  const [orders, setOrders] = useState();
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
   const { Search } = Input;
-
+  let { id } = useParams();
   const prefix = (
     <SearchOutlined
       style={{
@@ -32,13 +39,24 @@ const ViewCustomer = () => {
       }}
     />
   );
-
+  const fetchOrders = async () => {
+    try {
+      const res = await request.get('professionalOrders');
+      if (res.status === 200) {
+        const temp = res.data.filter((val) => val.customer === data.studioName);
+        console.log('sad', temp);
+        setOrders(temp);
+      }
+    } catch (e) {
+      console.log('error fetching orders!', e);
+    }
+  };
   const fetchViewCustomer = async () => {
     setLoading(true);
     try {
-      const res = await request.get(' viewCustomer');
+      const res = await request.get(`professionalCustomer/${id}`);
       if (res.status === 200) {
-        //console.log('data', res.data);
+        console.log('data', res.data);
         setData(res.data);
       }
     } catch (e) {
@@ -49,59 +67,49 @@ const ViewCustomer = () => {
   };
 
   useEffect(() => {
-    fetchViewCustomer();
-  }, []);
+    if (id) {
+      fetchViewCustomer();
+    }
+  }, [id]);
+  useEffect(() => {
+    if (data) {
+      fetchOrders();
+    }
+  }, [data]);
 
   const columns = [
     {
       title: 'Shop Name',
-      dataIndex: 'shopName',
+      dataIndex: 'customer',
       key: 'shopName'
     },
     {
       title: 'Mobile',
-      dataIndex: 'mobile',
+      dataIndex: 'contactNumber',
       key: 'mobile'
     },
     {
-      title: 'Total',
+      title: 'Total (LKR)',
       dataIndex: 'total',
       key: 'total'
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date'
+      title: 'Order Date',
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+      render: (_, record) => (
+        <Typography.Text>{moment(record.orderDate).format('YYYY-MM-DD')}</Typography.Text>
+      )
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address'
-    },
-    {
-      title: 'Order Status',
-      dataIndex: 'orderStatus',
-      key: 'orderStatus'
+      title: 'Order Type',
+      dataIndex: 'orderType',
+      key: 'orderType'
     },
     {
       title: 'Payment Status',
       dataIndex: 'paymentStatus',
       key: 'paymentStatus'
-    },
-
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      render: () => (
-        <>
-          <div className="actionGrp">
-            <Button icon={<EditOutlined />} />
-            <Button style={{ margin: '0px 10px' }} icon={<EyeOutlined />} />
-            <Button danger icon={<DeleteOutlined />} />
-          </div>
-        </>
-      )
     }
   ];
 
@@ -121,30 +129,25 @@ const ViewCustomer = () => {
   return (
     <MainLayout title="View Customer">
       <div>
-        <h1>Customer Profile</h1>
-      </div>
-      <div>
         <div className="site-card-border-less-wrapper">
-          <Card title="Profile View" bordered={false} style={{ width: 300 }}>
-            <p>Owner</p>
-            <p>Shop Name</p>
-            <p>Mobile</p>
-            <p>Address</p>
-            <p>Join Date</p>
-            <p>Account Balance</p>
+          <Card title="Customer Profile" bordered={false} style={{ width: 300 }} loading={loading}>
+            <DetailText title="Owner" value={data?.ownerName} />
+            <DetailText title="Shop Name" value={data?.studioName} />
+            <DetailText title="Mobile" value={data?.mobile} />
+            <DetailText title="Address" value={data?.address} />
+            <DetailText title="Join Date" value={moment(data?.joinDate).format('YYYY-MM-DD')} />
+            <DetailText title="Account Balance" value={data?.accountBalance + ' LKR'} />
           </Card>
         </div>
       </div>
-
       <div>
-        <div>
+        {/* <div>
           <Link to={'/addCustomer'}>
             <Button className="mButton" type="primary" icon={<PlusOutlined />}>
               Manage Unpaid Orders
             </Button>
           </Link>
-        </div>
-
+        </div> */}
         <Search
           prefix={prefix}
           allowClear
@@ -152,19 +155,11 @@ const ViewCustomer = () => {
           size="large"
           onSearch={onSearch}
           className="amateurSearch"
-          placeHolder="Enter Order ID"
+          placeholder="Enter Order ID"
         />
-
-        <Button type="primary" className="rButton">
-          Reset
-        </Button>
-
-        <Button type="primary" icon={<DownloadOutlined />} className="actionButton">
-          Download List
-        </Button>
-        <div className="tableContainer">
-          <Table dataSource={data} columns={columns} loading={loading} />
-        </div>
+      </div>
+      <div className="tableContainer">
+        {orders && <Table dataSource={orders} columns={columns} loading={loading} />}
       </div>
     </MainLayout>
   );

@@ -287,6 +287,7 @@ const EventOrder = () => {
                     name="mobile"
                     rules={[{ required: true, message: 'Contact Number is required' }]}>
                     <InputNumber
+                      maxLength={10}
                       value={editOrder?.mobile}
                       style={{ width: '60%' }}
                       controls={false}
@@ -380,7 +381,10 @@ const EventOrder = () => {
                               setError(undefined);
                               setAddVisible(false);
                               setItems([...items, form.getFieldValue('Items')]);
-                              form.resetFields([['Items', 'item'], ['Items', 'price']]);
+                              form.resetFields([
+                                ['Items', 'item'],
+                                ['Items', 'price']
+                              ]);
                             } else {
                               setError('Item or price cannot be empty!');
                             }
