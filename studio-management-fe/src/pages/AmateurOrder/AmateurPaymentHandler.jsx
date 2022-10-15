@@ -21,6 +21,7 @@ import '../EventOrder/Styles.css';
 import moment from 'moment';
 import ReactToPrint from 'react-to-print';
 import useRequest from '../../services/RequestContext';
+import { jsPDF } from 'jspdf';
 
 const { Text } = Typography;
 
@@ -46,6 +47,7 @@ const AmateurPaymentHandler = (props) => {
   const [currentPayment, setCurrentPayment] = useState();
   const [orderStatus, setOrderStatus] = useState();
   const [values, setValues] = useState();
+  let doc;
 
   const setRecord = () => {
     console.log('xxx', props?.record);
@@ -79,6 +81,20 @@ const AmateurPaymentHandler = (props) => {
       console.log('error updating', e);
     }
   };
+
+  const downloadPDF = () => {
+    doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [1700, 1000]
+    });
+    doc.html(document.getElementById('printdiv'), {
+      callback: function (pdf) {
+        pdf.save('PaymentReciept.pdf');
+      }
+    });
+  };
+
   return (
     <>
       <Modal
@@ -194,7 +210,7 @@ const AmateurPaymentHandler = (props) => {
           </div>
           <Divider type="vertical" />
           <div className="receipt">
-            <div className="receiptDetails" ref={componentRef}>
+            <div className="receiptDetails" ref={componentRef} id="printdiv">
               <div>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Studio 73 and Color Lab</Text>{' '}
                 <br />
@@ -204,7 +220,8 @@ const AmateurPaymentHandler = (props) => {
                 </Text>
               </div>
               <div style={{ marginTop: 5 }}>
-                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Event Order Details</Text> <br />
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Amateur Order Details</Text>{' '}
+                <br />
                 <Text>Order Id: {values?._id}</Text> <br />
                 <Text>Customer Name: {values?.customer}</Text> <br />
                 <Text>Mobile: {values?.mobile}</Text> <br />
@@ -287,7 +304,8 @@ const AmateurPaymentHandler = (props) => {
               <Button
                 style={{ marginTop: 8, marginLeft: 10 }}
                 icon={<DownloadOutlined />}
-                type="primary">
+                type="primary"
+                onClick={downloadPDF}>
                 Download Receipt
               </Button>
             </div>

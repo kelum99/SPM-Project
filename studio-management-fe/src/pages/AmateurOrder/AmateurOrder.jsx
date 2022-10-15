@@ -5,7 +5,8 @@ import {
   EditOutlined,
   EyeOutlined,
   DeleteOutlined,
-  QuestionCircleOutlined
+  QuestionCircleOutlined,
+  DownloadOutlined
 } from '@ant-design/icons';
 import MainLayout from '../../components/MainLayout';
 import useRequest from '../../services/RequestContext';
@@ -13,6 +14,9 @@ import './AmateurOrderStyles.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import AmateurPaymentHandler from './AmateurPaymentHandler';
+import { jsPDF } from 'jspdf';
+import logoprint from '../../components/Studio 73 1.png';
+import moment from 'moment';
 
 const AmateurOrder = () => {
   const [data, setData] = useState([]);
@@ -21,6 +25,8 @@ const AmateurOrder = () => {
   const { Search } = Input;
   let navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState();
+  let doc;
+  const date = Date.now();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -113,6 +119,34 @@ const AmateurOrder = () => {
     }
   ];
 
+  const columns2 = [
+    {
+      title: 'Order Id',
+      dataIndex: '_id',
+      key: '_id'
+    },
+    {
+      title: 'Customer',
+      dataIndex: 'customer',
+      key: 'customer'
+    },
+    {
+      title: 'Mobile',
+      dataIndex: 'mobile',
+      key: 'mobile'
+    },
+    {
+      title: 'Payment Status',
+      dataIndex: 'paymentStatus',
+      key: 'paymentStatus'
+    },
+    {
+      title: 'Order Status',
+      dataIndex: 'orderStatus',
+      key: 'orderStatus'
+    }
+  ];
+
   const onSearch = useCallback(
     (value) => {
       let temp = [];
@@ -133,6 +167,19 @@ const AmateurOrder = () => {
     setSelectedOrder(undefined);
   };
 
+  const downloadPDF = () => {
+    doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [1700, 1000]
+    });
+    doc.html(document.getElementById('printTable'), {
+      callback: function (pdf) {
+        pdf.save('AmateurOrderReport.pdf');
+      }
+    });
+  };
+
   return (
     <center>
       <MainLayout title="Amateur Order">
@@ -141,14 +188,9 @@ const AmateurOrder = () => {
             style={{
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-end',
               marginBottom: '2%'
             }}>
-            <Link to="/addAmateurOrder">
-              <Button type="primary" icon={<PlusOutlined />} className="actionButton">
-                Add Amateur Order
-              </Button>
-            </Link>
             <Search
               placeholder="Input search text"
               allowClear
@@ -168,6 +210,7 @@ const AmateurOrder = () => {
                 rowKey={(record) => record._id}
               />
             </div>
+
             <div className="cards">
               {data.map((item) => (
                 <div key={item._id}>
@@ -218,6 +261,58 @@ const AmateurOrder = () => {
                   <Divider type="horizontal" className="horizontalDivider" />
                 </div>
               ))}
+            </div>
+          </div>
+          <div className="buttonGrp">
+            <div className="actionButton">
+              <Link to="/addAmateurOrder">
+                <Button type="primary" icon={<PlusOutlined />}>
+                  Add Amateur Order
+                </Button>
+              </Link>
+            </div>
+            <div className="actionButton">
+              <Button icon={<DownloadOutlined />} type="primary" onClick={downloadPDF}>
+                Download List
+              </Button>
+            </div>
+          </div>
+          <div style={{ visibility: 'hidden', width: '100%' }}>
+            <div id="printTable">
+              <center>
+                <div className="reportheaderdiv">
+                  <div className="logoPrint">
+                    <img src={logoprint} alt="logo" />
+                  </div>
+                  <div className="headingdiv">
+                    <h3>Amateur Order Report</h3>
+                  </div>
+                </div>
+                <Divider style={{ backgroundColor: 'black' }} />
+                <Table
+                  columns={columns2}
+                  dataSource={data}
+                  size="middle"
+                  pagination={false}
+                  style={{ marginLeft: '10%', marginTop: '5%' }}
+                />
+                <Divider style={{ backgroundColor: 'black' }} />
+                <div className="reportheaderdiv">
+                  <div className="datediv">
+                    <h4>{moment(date).format('YYYY-MM-DDTHH:mm:ss')}</h4>
+                  </div>
+                  <div className="footerdiv">
+                    <h4>Studio 73 and Color Lab</h4>
+                    <p>
+                      Tel: 0452356870
+                      <br />
+                      e-mail:- studio73@gmail.com
+                      <br />
+                      address: No 11/7 Rathwaththa Rd, Balangoda
+                    </p>
+                  </div>
+                </div>
+              </center>
             </div>
           </div>
           <AmateurPaymentHandler

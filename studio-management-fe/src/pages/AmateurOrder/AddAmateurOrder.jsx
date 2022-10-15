@@ -433,13 +433,19 @@ const AddAmateurOrder = () => {
           <br />
 
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button htmlType="button" onClick={onReset}>
-              Reset
-            </Button>
+            <div className="buttonGrp">
+              <div className="actionButton">
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </div>
+
+              <div className="actionButton">
+                <Button htmlType="button" onClick={onReset}>
+                  Reset
+                </Button>
+              </div>
+            </div>
           </Form.Item>
         </Form>
 
