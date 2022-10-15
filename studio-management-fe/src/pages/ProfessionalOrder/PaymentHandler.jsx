@@ -215,7 +215,7 @@ const PaymentHandler = (props) => {
           </div>
           <Divider type="vertical" />
           <div className="receipt">
-            <div className="receiptDetails" ref={componentRef}>
+            <div className="receiptDetails" ref={componentRef} id="printdiv">
               <div>
                 <Text style={{ frontSize: 16, fontWeight: 'bold' }}>Studio 73 and color Lab</Text>
                 <br />
