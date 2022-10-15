@@ -22,6 +22,7 @@ import moment from 'moment';
 import ReactToPrint from 'react-to-print';
 import useRequest from '../../services/RequestContext';
 import './ProfessionalOrderStyles.css';
+import { jsPDF } from 'jspdf';
 
 const { Text } = Typography;
 
@@ -47,6 +48,7 @@ const PaymentHandler = (props) => {
   const [currentPayment, setCurrentPayment] = useState();
   const [paymentStatus, setPaymentStatus] = useState();
   const [values, setValues] = useState();
+  let doc;
 
   const setRecord = () => {
     console.log('xxx', props?.record);
@@ -82,6 +84,19 @@ const PaymentHandler = (props) => {
     } catch (e) {
       console.log('error updating', e);
     }
+  };
+
+  const downloadPDF = () => {
+    doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [1700, 1000]
+    });
+    doc.html(document.getElementById('printdiv'), {
+      callback: function (pdf) {
+        pdf.save('PaymentReciept.pdf');
+      }
+    });
   };
 
   return (
@@ -249,7 +264,8 @@ const PaymentHandler = (props) => {
               <Button
                 style={{ marginTop: 8, marginLeft: 10 }}
                 icon={<DownloadOutlined />}
-                type="primary">
+                type="primary"
+                onClick={downloadPDF}>
                 Download Receipt
               </Button>
             </div>
