@@ -47,4 +47,40 @@ export class CustomerService {
       );
     }
   }
+
+  async removeProfessionalCustomer(id: string) {
+    try {
+      const result = await this.serviceModel.deleteOne({ _id: id });
+      if (result && result.deletedCount === 1) {
+        return { message: 'Customer deleted!' };
+      }
+      return { message: 'No Customer found!' };
+    } catch (e) {
+      console.log('delete prof customer error ', e);
+      throw new HttpException(
+        'Error deleting professional customer',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async updateProfessionalCustomer(
+    id: string,
+    udpateCustomerDto: ProfessionalCustomerDocument,
+  ): Promise<any> {
+    try {
+      const result = await this.serviceModel.updateOne(
+        { _id: id },
+        udpateCustomerDto,
+      );
+      if (result) {
+        return { message: 'ProfessionalCustomer updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Event Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const AddCustomer = () => {
   const { request } = useRequest();
   const navigate = useNavigate();
-  const onFinish = async (values: any) => {
+  const onFinish = async (values) => {
     try {
       console.log('xx', values);
       const res = await request.post('professionalCustomer/add', values);

@@ -1,6 +1,16 @@
-import { Controller, Post, HttpCode, Body, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  HttpCode,
+  Body,
+  Get,
+  Delete,
+  Patch,
+  Param,
+} from '@nestjs/common';
 import { CreateProfessionalCustomerDto } from './dto/create.professionalCustomer.dto';
 import { CustomerService } from './professionalCustomer.service';
+import { ProfessionalCustomerDocument } from './schemas/professionalCustomer.schema';
 
 @Controller('professionalCustomer')
 export class ProfessionalCustomerController {
@@ -20,5 +30,18 @@ export class ProfessionalCustomerController {
   @Get('/:id')
   async getProfessionalCustomer(@Param('id') id: string) {
     return this.service.getProfessionalCustomer(id);
+  }
+
+  @Delete('/:id')
+  async removeProfessionalCustomer(@Param('id') id: string) {
+    return this.service.removeProfessionalCustomer(id);
+  }
+
+  @Patch('/:id')
+  async updateProfessionalCustomer(
+    @Param('id') id: string,
+    @Body() udpateCustomerDto: ProfessionalCustomerDocument,
+  ) {
+    return this.service.updateProfessionalCustomer(id, udpateCustomerDto);
   }
 }

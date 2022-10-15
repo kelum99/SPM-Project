@@ -51,6 +51,7 @@ const content = (
 
 const ProfessionalOrder = () => {
   const [data, setData] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [mode, setMode] = useState('Add');
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -80,12 +81,12 @@ const ProfessionalOrder = () => {
 
   useEffect(() => {
     let temp = 0;
-    if (mode === 'Edit') {
-      temp = editOrder?.total;
-    }
+    // if (mode === 'Edit') {
+    //   temp = editOrder?.total;
+    // }
     temp = printPrice + framePrice;
     setTotal(temp);
-  }, [mode, framePrice, printPrice]);
+  }, [framePrice, printPrice]);
 
   const showModal = () => {
     setMode('Add');
@@ -142,6 +143,20 @@ const ProfessionalOrder = () => {
     }
   };
 
+  const fetchProfessionalCustomer = async () => {
+    setLoading(true);
+    try {
+      const res = await request.get('professionalCustomer');
+      if (res.status === 200) {
+        setCustomers(res.data);
+      }
+    } catch (e) {
+      console.log('error fetching ProfessionalCustomer!', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onClosePaymentModel = async (val) => {
     await fetchOrders();
     setSelectedOrder(undefined);
@@ -149,6 +164,7 @@ const ProfessionalOrder = () => {
 
   useEffect(() => {
     fetchOrders();
+    fetchProfessionalCustomer();
   }, []);
 
   const onFinish = async (values) => {
@@ -207,6 +223,8 @@ const ProfessionalOrder = () => {
       if (res.status === 200) {
         message.success('Professional Order Updated!');
         setOpen(false);
+        form.resetFields();
+        setMode('Add');
         fetchOrders();
       }
     } catch (e) {
@@ -375,9 +393,13 @@ const ProfessionalOrder = () => {
                         //   defaultValue="Photo Size"
 
                         allowClear>
-                        <Option value="Nuwan Perera">Nuwan Perera</Option>
-                        <Option value="Pawani Kumara">Pawani Kumara</Option>
-                        <Option value="Dasun Silva">Dasun Silva</Option>
+                        {customers.map((customer) => (
+                          <>
+                            <Option key={customer.name} value={customer.studioName}>
+                              {customer.studioName}
+                            </Option>
+                          </>
+                        ))}
                       </Select>
                     </Form.Item>
                   </Col>
@@ -390,7 +412,6 @@ const ProfessionalOrder = () => {
                         {
                           required: true,
                           message: 'Contact number is required',
-
                           max: 10,
                           min: 10
                         }

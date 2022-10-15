@@ -287,6 +287,7 @@ const EventOrder = () => {
                     name="mobile"
                     rules={[{ required: true, message: 'Contact Number is required' }]}>
                     <InputNumber
+                      maxLength={10}
                       value={editOrder?.mobile}
                       style={{ width: '60%' }}
                       controls={false}

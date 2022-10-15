@@ -15,7 +15,7 @@ export class EventOrderService {
     try {
       const { payment, total } = createDto;
       const currentPay = payment
-        .map((val) => val.amount)
+        .map(val => val.amount)
         .reduce((prev, curr) => prev + curr);
       let payStatus = 'None';
 
@@ -83,7 +83,7 @@ export class EventOrderService {
     try {
       const { payment, orderStatus, total } = updateOrderDto;
       const currentPay = payment
-        .map((val) => val.amount)
+        .map(val => val.amount)
         .reduce((prev, curr) => prev + curr);
       let payStatus = 'None';
 
