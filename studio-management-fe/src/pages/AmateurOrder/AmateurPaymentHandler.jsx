@@ -241,38 +241,34 @@ const AmateurPaymentHandler = (props) => {
                   </Col>
                   {values?.items && (
                     <>
-                      {values?.items.map((item) => (
-                        <>
-                          <Col span={8}>
-                            <Text>{item.item}</Text>
-                          </Col>
-                          <Col span={8}>
-                            <Text>{item.amount}</Text>
-                          </Col>
-                          <Col span={8}>
-                            <Text>
-                              {item.itemPrice} LKR + {item.itemPrintPrice} LKR
-                            </Text>
-                          </Col>
-                        </>
-                      ))}
+                      <>
+                        <Col span={8}>
+                          <Text>{values?.items?.item}</Text>
+                        </Col>
+                        <Col span={8}>
+                          <Text>{values?.items?.amount}</Text>
+                        </Col>
+                        <Col span={8}>
+                          <Text>
+                            {values?.items?.itemPrice} LKR + {values?.items?.itemPrintPrice} LKR
+                          </Text>
+                        </Col>
+                      </>
                     </>
                   )}
                   {values?.photos && (
                     <>
-                      {values?.photos.map((photo) => (
-                        <>
-                          <Col span={8}>
-                            <Text>{photo.photoSize}</Text>
-                          </Col>
-                          <Col span={8}>
-                            <Text>{photo.copies}</Text>
-                          </Col>
-                          <Col span={8}>
-                            <Text>{photo.printPrice} LKR</Text>
-                          </Col>
-                        </>
-                      ))}
+                      <>
+                        <Col span={8}>
+                          <Text>{values?.photos?.photoSize}</Text>
+                        </Col>
+                        <Col span={8}>
+                          <Text>{values?.photos?.copies}</Text>
+                        </Col>
+                        <Col span={8}>
+                          <Text>{values?.photos?.printPrice} LKR</Text>
+                        </Col>
+                      </>
                     </>
                   )}
                 </Row>
