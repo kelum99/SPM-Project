@@ -1,6 +1,8 @@
 import React from 'react';
 import MainLayout from '../../components/MainLayout';
-import { Button, Table, Input, Card } from 'antd';
+import { Button, Table, Input, Card, Divider } from 'antd';
+import logoprint from '../../components/Studio 73 1.png';
+import { jsPDF } from 'jspdf';
 import './ProfessionalCustomerStyles.css';
 import {
   PlusOutlined,
@@ -15,12 +17,15 @@ import useRequest from '../../services/RequestContext';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const ViewCustomer = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { request } = useRequest();
   const { Search } = Input;
+  let doc;
+  const date = Date.now();
 
   const prefix = (
     <SearchOutlined
@@ -33,6 +38,18 @@ const ViewCustomer = () => {
     />
   );
 
+  const downloadPDF = () => {
+    doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [1700, 1000]
+    });
+    doc.html(document.getElementById('printTable'), {
+      callback: function(pdf) {
+        pdf.save('ProfessionalCustomerReport.pdf');
+      }
+    });
+  };
   const fetchViewCustomer = async () => {
     setLoading(true);
     try {
@@ -105,6 +122,44 @@ const ViewCustomer = () => {
     }
   ];
 
+  const columns2 = [
+    {
+      title: 'Shop Name',
+      dataIndex: 'shopName',
+      key: 'shopName'
+    },
+    {
+      title: 'Mobile',
+      dataIndex: 'mobile',
+      key: 'mobile'
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total'
+    },
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date'
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address'
+    },
+    {
+      title: 'Order Status',
+      dataIndex: 'orderStatus',
+      key: 'orderStatus'
+    },
+    {
+      title: 'Payment Status',
+      dataIndex: 'paymentStatus',
+      key: 'paymentStatus'
+    }
+  ];
+
   const onSearch = (value) => {
     let result = [];
     result = data.filter((res) => {
@@ -159,11 +214,55 @@ const ViewCustomer = () => {
           Reset
         </Button>
 
-        <Button type="primary" icon={<DownloadOutlined />} className="actionButton">
-          Download List
-        </Button>
         <div className="tableContainer">
           <Table dataSource={data} columns={columns} loading={loading} />
+        </div>
+
+        <Button
+          type="primary"
+          icon={<DownloadOutlined />}
+          className="actionButton"
+          onClick={downloadPDF}>
+          Download List
+        </Button>
+
+        <div style={{ visibility: 'hidden', width: '100%' }}>
+          <div id="printTable">
+            <center>
+              <div className="reportheaderdiv">
+                <div className="logoPrint">
+                  <img src={logoprint} alt="logo" />
+                </div>
+                <div className="headingdiv">
+                  <h3>Professional Customer Report</h3>
+                </div>
+              </div>
+              <Divider style={{ backgroundColor: 'black' }} />
+              <Table
+                columns={columns2}
+                dataSource={data}
+                size="middle"
+                pagination={false}
+                style={{ marginLeft: '10%', marginTop: '5%' }}
+              />
+              <Divider style={{ backgroundColor: 'black' }} />
+              <div className="reportheaderdiv">
+                <div className="datediv">
+                  <h4>{moment(date).format('YYYY-MM-DDTHH:mm:ss')}</h4>
+                </div>
+                <div className="footerdiv">
+                  <h4>Studio 73 and Color Lab</h4>
+                  <p>
+                    Tel: 0452356870
+                    <br />
+                    e-mail:- studio73@gmail.com
+                    <br />
+                    address: No 11/7 Rathwaththa Rd, Balangoda
+                  </p>
+                </div>
+              </div>
+            </center>
+          </div>
         </div>
       </div>
     </MainLayout>
