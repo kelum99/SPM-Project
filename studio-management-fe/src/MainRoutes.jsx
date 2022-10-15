@@ -8,7 +8,7 @@ import AmateurOrder from './pages/AmateurOrder/AmateurOrder';
 import AddCustomer from './pages/ProfessionalCustomer/AddCustomer';
 import UpdateCustomer from './pages/ProfessionalCustomer/UpdateCustomer';
 import AddAmateurOrder from './pages/AmateurOrder/AddAmateurOrder';
-import ViewCustomer from './pages/ProfessionalCustomer/ViewCustomer';
+import ProfileCutomer from './pages/ProfessionalCustomer/ProfileCutomer';
 export default function MainRoutes() {
   return (
     <>
@@ -19,10 +19,10 @@ export default function MainRoutes() {
         <Route path="/professionalCustomer" element={<ProfessionalCustomer />} />
         <Route path="/addCustomer" element={<AddCustomer />} />
         <Route path="/professionalCustomer/updateCustomer/:id" element={<UpdateCustomer />} />
-        <Route path="/professionalCustomer/viewCustomer/:id" element={<ViewCustomer />} />
         <Route path="/amateurOrder" element={<AmateurOrder />} />
         <Route path="/addAmateurOrder" element={<AddAmateurOrder />} />
         <Route path="/editAmateurOrder/:id" element={<AddAmateurOrder />} />
+        <Route path="/customerProfile/:id" element={<ProfileCutomer />} />
       </Routes>
     </>
   );

@@ -62,18 +62,22 @@ const EventOrder = () => {
 
   const onFinish = async (values) => {
     try {
-      const res = await request.post('eventOrders/add', {
-        ...values,
-        items: items,
-        orderStatus: 'None',
-        paymentStatus: 'None',
-        total: total,
-        payment: [{ amount: payment, date: Date.now() }]
-      });
-      if (res.status === 201) {
-        message.success('Event Order Added Successfully!');
-        fetchOrders();
-        handleCancel();
+      if (items.length > 0) {
+        const res = await request.post('eventOrders/add', {
+          ...values,
+          items: items,
+          orderStatus: 'None',
+          paymentStatus: 'None',
+          total: total,
+          payment: [{ amount: payment, date: Date.now() }]
+        });
+        if (res.status === 201) {
+          message.success('Event Order Added Successfully!');
+          fetchOrders();
+          handleCancel();
+        }
+      } else {
+        message.error('You must add at least one item!');
       }
     } catch (e) {
       console.log('error adding data', e);
@@ -285,7 +289,12 @@ const EventOrder = () => {
                   <Form.Item
                     label="Contact Number"
                     name="mobile"
-                    rules={[{ required: true, message: 'Contact Number is required' }]}>
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Contact Number is required'
+                      }
+                    ]}>
                     <InputNumber
                       maxLength={10}
                       value={editOrder?.mobile}
@@ -330,7 +339,10 @@ const EventOrder = () => {
                     rules={[{ required: true, message: 'Event Date is required' }]}>
                     <DatePicker placeholder="Select Date" />
                   </Form.Item>
-                  <Form.Item label="Payment" required name="paymentX">
+                  <Form.Item
+                    label="Payment"
+                    rules={[{ required: true, message: 'Payment is required' }]}
+                    name="paymentX">
                     <InputNumber
                       min={0}
                       controls={false}

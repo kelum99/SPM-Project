@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form, Input, Button, Card, Typography, Space, message } from 'antd';
-import { Link } from 'react-router-dom';
+import { Form, Input, Button, Card, Typography, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import useRequest from '../services/RequestContext';
 import useUser from '../services/UserContext';
 import './ComponentsStyles.css';
@@ -9,9 +9,27 @@ export default function Login() {
   const [form] = Form.useForm();
   const { request, UpdateToken } = useRequest();
   const { decodeToken } = useUser();
+  const navigate = useNavigate();
+  const user = {
+    email: 'admin@gmail.com',
+    password: 'admin123'
+  };
+
+  const onFinish = (values) => {
+    console.log(values);
+    if (values.email === user.email && values.password === user.password) {
+      navigate('amateurOrder');
+    } else {
+      message.error('Email or Password Incorrect. Try Again!');
+    }
+  };
 
   return (
     <div className="login-main">
+      <Typography.Title
+        style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 30, color: '#fff' }}>
+        Welcome to Studio 73 and Color Lab
+      </Typography.Title>
       <div className="login-main-component">
         <Card
           className="loginCard"
@@ -24,7 +42,7 @@ export default function Login() {
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             initialValues={{ remember: true }}
-            //onFinish={onFinish}
+            onFinish={onFinish}
             form={form}
             autoComplete="off">
             <Form.Item
@@ -61,9 +79,9 @@ export default function Login() {
             </Form.Item>
 
             <Form.Item style={{ alignItems: 'center' }}>
-              <Link to={'/eventOrder'}>
-                <Button>Login</Button>
-              </Link>
+              <Button key="submit" type="primary" htmlType="submit">
+                Login
+              </Button>
             </Form.Item>
           </Form>
         </Card>
