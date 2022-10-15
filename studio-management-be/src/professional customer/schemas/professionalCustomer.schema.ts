@@ -21,21 +21,6 @@ export class ProfessionalCustomer {
 
   @Prop({ required: true })
   joinDate: Date;
-
-  @Prop({ required: true })
-  shopName: string;
-
-  @Prop({ required: true })
-  total: string;
-
-  @Prop({ required: true })
-  date: string;
-
-  @Prop({ required: true })
-  orderStatus: string;
-
-  @Prop({ required: true })
-  paymentStatus: string;
 }
 
 export const ProfessionalCustomerSchema = SchemaFactory.createForClass(
