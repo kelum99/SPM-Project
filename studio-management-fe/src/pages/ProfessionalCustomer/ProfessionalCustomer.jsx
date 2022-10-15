@@ -109,7 +109,7 @@ const ProfessionalCustomer = () => {
             />
             <Button
               style={{ margin: '0px 10px' }}
-              onClick={() => navigate(`viewCustomer/${record._id}`)}
+              onClick={() => navigate(`/customerProfile/${record._id}`)}
               icon={<EyeOutlined />}
             />
             <Popconfirm
