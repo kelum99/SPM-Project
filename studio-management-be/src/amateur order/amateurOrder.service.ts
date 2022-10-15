@@ -97,4 +97,24 @@ export class AmateurOrderService {
       );
     }
   }
+
+  async updateAmateurOrder(
+    id: string,
+    updateOrderDto: AmateurOrderDocument,
+  ): Promise<any> {
+    try {
+      const result = await this.amateurOrderModel.updateOne(
+        { _id: id },
+        updateOrderDto,
+      );
+      if (result) {
+        return { message: 'Amateur order updated' };
+      }
+    } catch {
+      throw new HttpException(
+        'Error Updating Amateur Order',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }
