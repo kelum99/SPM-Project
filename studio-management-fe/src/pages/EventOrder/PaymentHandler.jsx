@@ -21,6 +21,7 @@ import './Styles.css';
 import moment from 'moment';
 import ReactToPrint from 'react-to-print';
 import useRequest from '../../services/RequestContext';
+import { jsPDF } from 'jspdf';
 
 const { Text } = Typography;
 
@@ -46,6 +47,7 @@ const PaymentHandler = (props) => {
   const [currentPayment, setCurrentPayment] = useState();
   const [orderStatus, setOrderStatus] = useState();
   const [values, setValues] = useState();
+  let doc;
 
   const setRecord = () => {
     console.log('xxx', props?.record);
@@ -54,6 +56,19 @@ const PaymentHandler = (props) => {
       props?.record?.payment.map((val) => val.amount).reduce((prev, curr) => prev + curr)
     );
     setOrderStatus(props?.record?.orderStatus);
+  };
+
+  const downloadPDF = () => {
+    doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [1700, 1000]
+    });
+    doc.html(document.getElementById('printdiv'), {
+      callback: function (pdf) {
+        pdf.save('PaymentReciept.pdf');
+      }
+    });
   };
 
   useEffect(() => {
@@ -82,7 +97,7 @@ const PaymentHandler = (props) => {
   return (
     <>
       <Modal
-        width={1080}
+        width={1200}
         title="Payment Handler"
         footer={
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -194,7 +209,7 @@ const PaymentHandler = (props) => {
           </div>
           <Divider type="vertical" />
           <div className="receipt">
-            <div className="receiptDetails" ref={componentRef}>
+            <div className="receiptDetails" ref={componentRef} id="printdiv">
               <div>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Studio 73 and Color Lab</Text>{' '}
                 <br />
@@ -266,6 +281,7 @@ const PaymentHandler = (props) => {
                 content={() => componentRef.current}
               />
               <Button
+                onClick={downloadPDF}
                 style={{ marginTop: 8, marginLeft: 10 }}
                 icon={<DownloadOutlined />}
                 type="primary">
