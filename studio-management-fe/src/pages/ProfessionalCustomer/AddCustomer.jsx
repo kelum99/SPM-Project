@@ -3,6 +3,7 @@ import MainLayout from '../../components/MainLayout';
 import { Button, DatePicker, Form, Input, InputNumber, message } from 'antd';
 import useRequest from '../../services/RequestContext';
 import { useNavigate } from 'react-router-dom';
+
 const AddCustomer = () => {
   const { request } = useRequest();
   const navigate = useNavigate();
